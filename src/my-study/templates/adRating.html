@@ -1,0 +1,71 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <img src="./img/litw-logo.png" alt="LabintheWild" class="litw-logo-small mb-4">
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <img id="currentAd" class="img-fluid mb-4" src="" alt="Facebook Advertisement">
+        </div>
+    </div>
+
+    <div class="questions">
+        <div class="rating-question mb-4">
+            <p><strong>How likely are you to click this Facebook ad?</strong></p>
+            <div class="rating-scale" data-type="likelihood">
+                <span>Not Likely At All</span>
+                <div class="numbers">
+                    {{#each (range 1 9)}}
+                    <button class="rating-btn" data-value="{{this}}">{{this}}</button>
+                    {{/each}}
+                </div>
+                <span>Very Likely</span>
+            </div>
+        </div>
+
+        <div class="rating-question mb-4">
+            <p><strong>Visual Appeal?</strong></p>
+            <div class="rating-scale" data-type="appeal">
+                <span>Not Appealing At All</span>
+                <div class="numbers">
+                    {{#each (range 1 9)}}
+                    <button class="rating-btn" data-value="{{this}}">{{this}}</button>
+                    {{/each}}
+                </div>
+                <span>Very Appealing</span>
+            </div>
+        </div>
+
+        <div class="rating-question mb-4">
+            <p><strong>Colorfulness?</strong></p>
+            <div class="rating-scale" data-type="colorfulness">
+                <span>Not Colorful At All</span>
+                <div class="numbers">
+                    {{#each (range 1 9)}}
+                    <button class="rating-btn" data-value="{{this}}">{{this}}</button>
+                    {{/each}}
+                </div>
+                <span>Very Colorful</span>
+            </div>
+        </div>
+
+        <div class="rating-question mb-4">
+            <p><strong>Complexity?</strong></p>
+            <div class="rating-scale" data-type="complexity">
+                <span>Not Complex At All</span>
+                <div class="numbers">
+                    {{#each (range 1 9)}}
+                    <button class="rating-btn" data-value="{{this}}">{{this}}</button>
+                    {{/each}}
+                </div>
+                <span>Very Complex</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <button id="nextButton" class="btn btn-primary" disabled>Next</button>
+    </div>
+</div> 

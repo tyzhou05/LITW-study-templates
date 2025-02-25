@@ -1,0 +1,65 @@
+<div class="row">
+    <div class="col d-flex justify-content-center">
+        <h2 class="bolded-blue" data-i18n="litw-study-quest1-title"></h2>
+    </div>
+</div>
+
+{{> prog progress}}
+
+<div id="questions">
+    <div class="text-center mb-4">
+        <img id="currentAd" class="img-fluid" src="./img/106-jpgs/ad1.jpg" alt="Facebook Advertisement">
+    </div>
+
+    <div class="question-group">
+        <h4 data-i18n="litw-study-quest1-q1"></h4>
+        <div class="responses">
+            {{#each responses}}
+            <div class="form-check">
+                <input type="radio" name="q1" value="{{this.id}}" class="form-check-input">
+                <label class="form-check-label" data-i18n="litw-study-quest-a{{this.id}}"></label>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="question-group">
+        <h4 data-i18n="litw-study-quest1-q2"></h4>
+        <div class="responses">
+            {{#each responses}}
+            <div class="form-check">
+                <input type="radio" name="q2" value="{{this.id}}" class="form-check-input">
+                <label class="form-check-label" data-i18n="litw-study-quest-a{{this.id}}"></label>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="question-group">
+        <h4 data-i18n="litw-study-quest1-q3"></h4>
+        <div class="responses">
+            {{#each responses}}
+            <div class="form-check">
+                <input type="radio" name="q3" value="{{this.id}}" class="form-check-input">
+                <label class="form-check-label" data-i18n="litw-study-quest-a{{this.id}}"></label>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="question-group">
+        <h4 data-i18n="litw-study-quest1-q4"></h4>
+        <div class="responses">
+            {{#each responses}}
+            <div class="form-check">
+                <input type="radio" name="q4" value="{{this.id}}" class="form-check-input">
+                <label class="form-check-label" data-i18n="litw-study-quest-a{{this.id}}"></label>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <button id="nextButton" class="btn btn-primary" data-i18n="litw-study-quest1-save"></button>
+    </div>
+</div> 

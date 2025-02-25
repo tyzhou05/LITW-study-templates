@@ -30,12 +30,14 @@ Handlebars.registerPartial('prog', Handlebars.compile(progressHTML));
 import introHTML from "../templates/introduction.html";
 import irbHTML from "../templates/irb.html";
 import irb_LITW_HTML from "../templates/irb2-litw.html";
-import questHTML from "../templates/questionnaire.html";
+import questHTML from "./pages/questionnaire.html";
 import demographicsHTML from "../templates/demographics.html";
 import loadingHTML from "../templates/loading.html";
 import resultsHTML from "../templates/results.html";
 import resultsFooterHTML from "../templates/results-footer.html";
 import commentsHTML from "../templates/comments.html";
+import adRatingHTML from "./pages/adRating.html";
+import adSurveyHTML from "./pages/adSurvey.html";
 
 //CONVERT HTML INTO TEMPLATES
 let introTemplate = Handlebars.compile(introHTML);
@@ -47,10 +49,58 @@ let loadingTemplate = Handlebars.compile(loadingHTML);
 let resultsTemplate = Handlebars.compile(resultsHTML);
 let resultsFooterTemplate = Handlebars.compile(resultsFooterHTML);
 let commentsTemplate = Handlebars.compile(commentsHTML);
+let adRatingTemplate = Handlebars.compile(adRatingHTML);
+let adSurveyTemplate = Handlebars.compile(adSurveyHTML);
 
-//TODO: document "params.study_id" when updating the docs/7-ManageData!!!
+// At the top level, add these variables
+let currentImageIndex = 0;
+const totalImagesToShow = 10;
+let selectedImages = [];
+
+// Create an array of the actual image filenames
+const IMAGE_FILES = [
+    "2101C1.jpg", "2101C2.jpg", "2101S1.jpg", "2102C2.jpg", "2102C2B.jpg",
+    "2102S1.jpg", "2103C1.jpg", "2103S1.jpg", "2104C1.jpg", "2104C2.jpg",
+    "2104S1.jpg", "2105C1B.jpg", "2105C2.jpg", "2105S.jpg", "2105S2.jpg",
+    "2106C1.jpg", "2106S1.jpg", "2106S2.jpg", "2107C1.jpg", "2107S1.jpg",
+    "2107S2.jpg", "2201C1.jpg", "2201C2.jpg", "2201S1.jpg", "2201S2.jpg",
+    "2202S1.jpg", "2204C1.jpg", "2204C2.jpg", "2204S1.jpg", "2204S2.jpg",
+    "2205C1.jpg", "2205S1.jpg", "2206C1.jpg", "2206S1.jpg", "2207C1.jpg",
+    "2207S1.jpg", "2207S2.jpg", "2208C1.jpg", "2208S1.jpg", "2208S2.jpg",
+    "2209C1.jpg", "2209S1.jpg", "2210C1.jpg", "2210C2.jpg", "2210S1.jpg",
+    "2211C1.jpg", "2211S1.jpg", "2301C1.jpg", "2301C2.jpg", "2301S1.jpg",
+    "2301S2.jpg", "2302C1.jpg", "2302S1.jpg", "2302S2.jpg", "2401C1.jpg",
+    "2401C2.jpg", "2401S1.jpg", "2401S2.jpg", "2402C1.jpg", "2402S1.jpg",
+    "2403C1.jpg", "2403C2B.jpg", "2403S1.jpg", "2404C1.jpg", "2404C2.jpg",
+    "2404S1.jpg", "2404S2B.jpg", "2405C1.jpg", "2405C2.jpg", "2405S1.jpg",
+    "2405S2.jpg", "2407C1.jpg", "2407C2.jpg", "2407S1.jpg", "2407S2.jpg",
+    "2408S1.jpg", "2409C1.jpg", "2409C2B.jpg", "2409S1.jpg", "2409S2.jpg",
+    "2410C1.jpg", "2410S1.jpg", "2501C1.jpg", "2501C2.jpg", "2501S1.jpg",
+    "2501S2.jpg", "2502C1.jpg", "2502C2B.jpg", "2502S1.jpg", "2601C1.jpg",
+    "2601C2.jpg", "2601S1.jpg", "2601S2.jpg", "2602C1.jpg", "2602C2.jpg",
+    "2602S1.jpg", "2602S2.jpg", "2604C1.jpg", "2604C2.jpg", "2604S1B.jpg",
+    "2604S2.jpg", "2701C1.jpg", "2701C2.jpg", "2701S1.jpg", "2702C1.jpg",
+    "2702S1.jpg"
+];
+
+// Add this function to randomly select images at start
+function initializeImageSelection() {
+	const allIndices = Array.from({length: IMAGE_FILES.length}, (_, i) => i);
+	for (let i = allIndices.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[allIndices[i], allIndices[j]] = [allIndices[j], allIndices[i]];
+	}
+	selectedImages = allIndices.slice(0, totalImagesToShow);
+}
+
+// At the top level, add this to track all responses
+let participantData = {
+    demographics: {},
+    responses: []
+};
+
 module.exports = (function(exports) {
-	const study_times= {
+	const study_times = {
 			SHORT: 5,
 			MEDIUM: 10,
 			LONG: 15,
@@ -73,13 +123,6 @@ module.exports = (function(exports) {
 				template: introTemplate,
 				display_next_button: false,
 			},
-			INFORMED_CONSENT: {
-				name: "informed_consent",
-				type: LITW.engine.SLIDE_TYPE.SHOW_SLIDE,
-				display_element_id: "irb",
-				template: irbTemplate,
-				display_next_button: false,
-			},
 			INFORMED_CONSENT_LITW: {
 				name: "informed_consent",
 				type: LITW.engine.SLIDE_TYPE.SHOW_SLIDE,
@@ -88,20 +131,6 @@ module.exports = (function(exports) {
 				template_data: {
 					time: study_times.SHORT,
 				},
-				display_next_button: false,
-			},
-			QUESTIONNAIRE_1: {
-				name: "quest1",
-				type: LITW.engine.SLIDE_TYPE.SHOW_SLIDE,
-				display_element_id: "quest1",
-				template: questTemplate,
-				display_next_button: false,
-			},
-			QUESTIONNAIRE_2: {
-				name: "quest2",
-				type: LITW.engine.SLIDE_TYPE.SHOW_SLIDE,
-				display_element_id: "quest2",
-				template: questTemplate,
 				display_next_button: false,
 			},
 			DEMOGRAPHICS: {
@@ -114,9 +143,84 @@ module.exports = (function(exports) {
 					local_data_id: 'LITW_DEMOGRAPHICS'
 				},
 				finish: function(){
-					let dem_data = $('#demographicsForm').alpaca().getValue();
-					LITW.data.addToLocal(this.template_data.local_data_id, dem_data);
-					LITW.data.submitDemographics(dem_data);
+					let demographicData = $('#demographicsForm').alpaca().getValue();
+					participantData.demographics = {
+						age: demographicData.age,
+						gender: demographicData.gender,
+						country: demographicData.country,
+						language: demographicData.language,
+						// ... other demographics you want to track
+					};
+					LITW.data.submitStudyData({
+						dataType: "demographics",
+						...participantData.demographics
+					});
+				}
+			},
+			QUESTIONNAIRE_1: {
+				name: "quest1",
+				type: LITW.engine.SLIDE_TYPE.SHOW_SLIDE,
+				display_element_id: "quest1",
+				template: questTemplate,
+				display_next_button: false,
+				template_data: () => {
+					return getQuest1Data('quest1', 75)
+				},
+				finish: function() {
+					let questData = {"dataType": "adRating"};
+					// Get the selected values for each question
+					questData["likelihood"] = $("input[name='q1']:checked").val();
+					questData["appeal"] = $("input[name='q2']:checked").val();
+					questData["colorfulness"] = $("input[name='q3']:checked").val();
+					questData["complexity"] = $("input[name='q4']:checked").val();
+					
+					LITW.data.submitStudyData(questData);
+				}
+			},
+			AD_SURVEY: {
+				name: "ad_survey",
+				type: LITW.engine.SLIDE_TYPE.SHOW_SLIDE,
+				display_element_id: "ad-survey",
+				template: adSurveyTemplate,
+				display_next_button: true,
+				on_display: function() {
+					// Hide next button initially and clear selections
+					$("#btn-next-page").hide();
+					selectionData = {};
+					document.querySelectorAll('button').forEach(btn => {
+						btn.classList.remove('active');
+					});
+				},
+				template_data: () => {
+					return {
+						progress: {
+							value: Math.round((currentImageIndex + 1) / totalImagesToShow * 100)
+						},
+						currentImage: `./img/106-jpgs/${IMAGE_FILES[selectedImages[currentImageIndex]]}`
+					}
+				},
+				finish: function() {
+					// Save response for current image
+					participantData.responses.push({
+						imageId: IMAGE_FILES[selectedImages[currentImageIndex]],
+						likelihood: parseInt(selectionData.likelihood),
+						appeal: parseInt(selectionData.appeal)
+					});
+
+					currentImageIndex++;
+					
+					// If this was the last image, submit all data
+					if (currentImageIndex >= totalImagesToShow) {
+						// Submit final compiled data
+						LITW.data.submitStudyData({
+							dataType: "finalData",
+							demographics: participantData.demographics,
+							imageRatings: participantData.responses
+						});
+						LITW.utils.showSlide("comments");
+					} else {
+						LITW.utils.showSlide("ad-survey");
+					}
 				}
 			},
 			COMMENTS: {
@@ -150,85 +254,56 @@ module.exports = (function(exports) {
 		timeline.push(config.slides.INFORMED_CONSENT_LITW);
 		timeline.push(config.slides.DEMOGRAPHICS);
 
-		// MUST BE a function because we don't have $.i18() available at configuration time! SHOULD WE?
-		config.slides.QUESTIONNAIRE_1.template_data = () => {
-			return getQuest1Data('quest1', 50)
-		};
-		timeline.push(config.slides.QUESTIONNAIRE_1);
-		config.slides.QUESTIONNAIRE_2.template_data = () => {
-			return getQuest2Data('quest2', './img/cat-computer.png', 100);
+		// Add 10 survey slides, one for each image
+		for (let i = 0; i < 10; i++) {
+			timeline.push({
+				name: `ad_survey_${i}`,
+				type: LITW.engine.SLIDE_TYPE.SHOW_SLIDE,
+				display_element_id: "ad-survey",
+				template: adSurveyTemplate,
+				display_next_button: true,
+				template_data: {
+					progress: {
+						current: i,
+						total: 10,
+						value: Math.floor((i / 10) * 100)
+					},
+					currentImage: `./img/106-jpgs/${IMAGE_FILES[selectedImages[i]]}`
+				},
+				on_display: function() {
+					$("#btn-next-page").hide();
+					selectionData = {};
+					document.querySelectorAll('button').forEach(btn => {
+						btn.classList.remove('active');
+					});
+				},
+				finish: function() {
+					LITW.data.submitStudyData({
+						dataType: "adSurvey",
+						imageNumber: selectedImages[i],
+						likelihood: selectionData.likelihood,
+						appeal: selectionData.appeal
+					});
+				}
+			});
 		}
-		timeline.push(config.slides.QUESTIONNAIRE_2);
+
 		timeline.push(config.slides.COMMENTS);
 		timeline.push(config.slides.RESULTS);
 		return timeline;
 	}
 
-	function getQuest1Data(quest_id, completion) {
-		return {
-			title: $.i18n(`litw-study-${quest_id}-title`),
-			progress: {
-				value: completion
-			},
-			quest_id: quest_id,
-			done_button: $.i18n(`litw-study-${quest_id}-save`),
-			questions: [1, 2].map((x)=> {
-				return {
-					id: x,
-					text: $.i18n(`litw-study-${quest_id}-q${x}`)
-				}
-			}),
-			responses: [1, 2, 3, 4, 5].map((x)=> {
-				return {
-					id: x,
-					text: $.i18n(`litw-study-quest-a${x}`)
-				}
-			})
-		}
-	}
-
-	function getQuest2Data(quest_id, img_url, completion) {
-		return {
-			title: $.i18n(`litw-study-${quest_id}-title`),
-			img_prompt: {
-				url: img_url,
-				text_before: $.i18n(`litw-study-${quest_id}-prompt`),
-			},
-			progress: {
-				value: completion
-			},
-			quest_id: quest_id,
-			done_button: $.i18n(`litw-study-${quest_id}-save`),
-			questions: [1, 2].map((q)=> {
-				return {
-					id: q,
-					text: $.i18n(`litw-study-${quest_id}-q${q}`),
-				}
-				//ALERT: You can also add responses for each question.
-			}),
-			responses: [1, 2, 3, 4, 5].map((x)=> {
-				return {
-					id: x,
-					text: $.i18n(`litw-study-quest-a${x}`)
-				}
-			})
-		}
-	}
-
 	function calculateResults() {
-		//TODO: Nothing to calculate
 		let results_data = {}
 		showResults(results_data, true)
 	}
 
-	//TODO Should be better supported by the ENGINE to setup HTML and show "SLIDE"
 	function showResults(results = {}, showFooter = false) {
 		let results_div = $("#results");
 		let recom_studies = [];
 		LITW.engage.getStudiesRecommendation(config.study_id, (studies) => {recom_studies = studies});
 
 		if('PID' in LITW.data.getURLparams) {
-			//REASON: Default behavior for returning a unique PID when collecting data from other platforms
 			results.code = LITW.data.getParticipantId();
 		}
 
@@ -247,41 +322,114 @@ module.exports = (function(exports) {
 			));
 		}
 		results_div.i18n();
-		//TODO Likely move to engine!
 		LITW.utils.showSlide("results");
 	}
 
-	//TODO Move to LITW.DATA library
-	function readSummaryData() {
-		$.getJSON( "summary.json", function( data ) {
-			//TODO: 'data' contains the produced summary form DB data
-			//      in case the study was loaded using 'index.php'
-			//SAMPLE: The example code gets the cities of study particpants.
-			console.log(data);
-		});
-	}
-
-
 	function bootstrap() {
+		initializeImageSelection();  // Initialize image selection before starting study
 		let good_config = LITW.engine.configure_study(config.preLoad, config.languages,
 			configureTimeline(), config.study_id);
 		if (good_config){
 			LITW.engine.start_study();
 		} else {
 			console.error("Study configuration error!");
-			//TODO fail nicely, maybe a page with useful info to send to the tech team?
 		}
 	}
 
-
-
-	// when the page is loaded, start the study!
 	$(document).ready(function() {
 		bootstrap();
 	});
+	
 	exports.study = {};
-	exports.study.params = config
+	exports.study.params = config;
 
 })( window.LITW = window.LITW || {} );
+
+class StudyManager {
+	constructor() {
+		this.selectedImages = [];
+		this.currentImageIndex = 0;
+		this.totalImagesToShow = 10;
+		this.responses = [];
+		
+		// Initialize when constructed
+		this.initializeImageSelection();
+	}
+
+	initializeImageSelection() {
+		// Create array of all possible indices
+		const allIndices = Array.from({length: IMAGE_FILES.length}, (_, i) => i);
+		
+		// Randomly select 10 indices
+		for (let i = allIndices.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[allIndices[i], allIndices[j]] = [allIndices[j], allIndices[i]];
+		}
+		this.selectedImages = allIndices.slice(0, this.totalImagesToShow);
+	}
+
+	getCurrentImagePath() {
+		return `./img/106-jpgs/${IMAGE_FILES[this.selectedImages[this.currentImageIndex]]}`;
+	}
+
+	saveResponse(response) {
+		this.responses.push({
+			imageId: this.selectedImages[this.currentImageIndex],
+			...response
+		});
+		
+		this.currentImageIndex++;
+		return this.currentImageIndex >= this.totalImagesToShow;
+	}
+}
+
+function getQuest1Data(quest_id, completion) {
+	return {
+		title: $.i18n(`litw-study-${quest_id}-title`),
+		progress: {
+			value: completion
+		},
+		quest_id: quest_id,
+		done_button: $.i18n(`litw-study-${quest_id}-save`),
+		questions: [1, 2, 3, 4].map((x)=> {
+			return {
+				id: x,
+				text: $.i18n(`litw-study-${quest_id}-q${x}`)
+			}
+		}),
+		responses: [1, 2, 3, 4, 5].map((x)=> {
+			return {
+				id: x,
+				text: $.i18n(`litw-study-quest-a${x}`)
+			}
+		}),
+		img_prompt: {
+			url: getCurrentImagePath(),
+			text_before: ""
+		}
+	}
+}
+
+// Update the selection function to handle 7-point scale
+selection = function(buttonID, questionType) {
+    // ... rest of the function ...
+    
+    // Update the validation to check for values 1-7
+    if(responseID >= 1 && responseID <= 7) {
+        selectionData[questionType] = responseID;
+        
+        // Show next button if both questions are answered
+        if(selectionData.likelihood && selectionData.appeal) {
+            LITW.utils.showNextButton(() => { 
+                LITW.data.submitStudyData({
+                    dataType: "adSurvey",
+                    imageNumber: selectedImages[currentImageIndex],
+                    likelihood: selectionData.likelihood,
+                    appeal: selectionData.appeal
+                });
+            });
+        }
+    }
+}
 
 

@@ -4,7 +4,7 @@ warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 import csv
 import json
 import pandas
-from pandas.io.json import json_normalize
+from pandas import json_normalize
 from datetime import datetime
 import argparse
 

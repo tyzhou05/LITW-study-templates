@@ -1,0 +1,58 @@
+.rating-scale {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.numbers {
+    display: flex;
+    gap: 1rem;
+}
+
+.numbers input[type="radio"] {
+    display: none;
+}
+
+.numbers label {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.numbers input[type="radio"]:checked + label {
+    background: #007bff;
+    color: white;
+}
+
+#currentAd {
+    max-width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.litw-logo-small {
+    height: 50px;
+    margin-bottom: 1rem;
+}
+
+.rating-question {
+    text-align: center;
+}
+
+.rating-question p {
+    color: #2c3e50;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+} 

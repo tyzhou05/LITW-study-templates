@@ -1,0 +1,73 @@
+<div class="row">
+    <div class="col d-flex justify-content-center">
+        <h2 class="bolded-blue" data-i18n="litw-ad-rating-title"></h2>
+    </div>
+</div>
+
+{{> prog progress}}
+
+<div id="questions">
+    <div id="ad-container" class="text-center mb-4">
+        <img id="currentAd" class="img-fluid" src="" alt="Facebook Advertisement">
+    </div>
+
+    <div id="question-likelihood">
+        <h4 data-i18n="litw-ad-rating-likelihood"></h4>
+        <div class="rating-scale">
+            <label data-i18n="litw-ad-rating-likelihood-low">Not Likely At All</label>
+            <div class="numbers">
+                {{#each (range 1 9)}}
+                <input type="radio" name="likelihood" id="likelihood_{{this}}" value="{{this}}"/>
+                <label for="likelihood_{{this}}">{{this}}</label>
+                {{/each}}
+            </div>
+            <label data-i18n="litw-ad-rating-likelihood-high">Very Likely</label>
+        </div>
+    </div>
+
+    <div id="question-appeal">
+        <h4 data-i18n="litw-ad-rating-appeal"></h4>
+        <div class="rating-scale">
+            <label data-i18n="litw-ad-rating-appeal-low">Not Appealing At All</label>
+            <div class="numbers">
+                {{#each (range 1 9)}}
+                <input type="radio" name="appeal" id="appeal_{{this}}" value="{{this}}"/>
+                <label for="appeal_{{this}}">{{this}}</label>
+                {{/each}}
+            </div>
+            <label data-i18n="litw-ad-rating-appeal-high">Very Appealing</label>
+        </div>
+    </div>
+
+    <div id="question-colorfulness">
+        <h4 data-i18n="litw-ad-rating-colorfulness"></h4>
+        <div class="rating-scale">
+            <label data-i18n="litw-ad-rating-colorfulness-low">Not Colorful At All</label>
+            <div class="numbers">
+                {{#each (range 1 9)}}
+                <input type="radio" name="colorfulness" id="colorfulness_{{this}}" value="{{this}}"/>
+                <label for="colorfulness_{{this}}">{{this}}</label>
+                {{/each}}
+            </div>
+            <label data-i18n="litw-ad-rating-colorfulness-high">Very Colorful</label>
+        </div>
+    </div>
+
+    <div id="question-complexity">
+        <h4 data-i18n="litw-ad-rating-complexity"></h4>
+        <div class="rating-scale">
+            <label data-i18n="litw-ad-rating-complexity-low">Not Complex At All</label>
+            <div class="numbers">
+                {{#each (range 1 9)}}
+                <input type="radio" name="complexity" id="complexity_{{this}}" value="{{this}}"/>
+                <label for="complexity_{{this}}">{{this}}</label>
+                {{/each}}
+            </div>
+            <label data-i18n="litw-ad-rating-complexity-high">Very Complex</label>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <button id="nextButton" class="btn btn-primary" data-i18n="litw-ad-rating-next" disabled></button>
+</div> 

@@ -1,0 +1,150 @@
+<style>
+    .btn-outline-primary {
+        background-color: transparent;
+        border: 1px solid #0d6efd;
+        color: #0d6efd;
+        min-width: 120px;
+        border-right: 1px solid #0d6efd !important; /* Ensure right border shows */
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #6788b9;
+        color: white;
+    }
+
+    .btn-outline-primary.active {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    .question-box {
+        margin: 30px 0;
+    }
+
+    .btn-group {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    .question-text {
+        margin: 20px 0;
+        font-size: 1.1rem;  /* Slightly smaller than h4 */
+        color: #2c3e50;
+    }
+
+    .btn-group .btn {
+        flex: 1;
+        border-radius: 0;
+    }
+
+    .main-question {
+        margin: 25px 0;
+        font-size: 1.3rem;
+        color: #2c3e50;
+        text-align: center;
+    }
+</style>
+
+<div class="row">
+    <div class="col d-flex justify-content-center">
+        <h2 class="bolded-blue" data-i18n="litw-adsurvey-title"></h2>
+    </div>
+</div>
+
+{{> prog progress}}
+
+<div id="questions">
+    <div class="text-center mb-4">
+        <img id="currentAd" class="img-fluid" src="{{currentImage}}" alt="Facebook Advertisement">
+    </div>
+
+    <p class="main-question" data-i18n="litw-adsurvey-question1"></p>
+    
+    <div id="question-box" class="instructions-stim-container">
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <p class="question-text" id="questionID1" data-question_id="likelihood" data-i18n="litw-adsurvey-question1-1"></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="btn-group">
+                <button id="likelihood1" data-response_id="1" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-1" onclick="selection('likelihood1', 'likelihood')"></button>
+                <button id="likelihood2" data-response_id="2" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-2" onclick="selection('likelihood2', 'likelihood')"></button>
+                <button id="likelihood3" data-response_id="3" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-3" onclick="selection('likelihood3', 'likelihood')"></button>
+                <button id="likelihood4" data-response_id="4" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-4" onclick="selection('likelihood4', 'likelihood')"></button>
+                <button id="likelihood5" data-response_id="5" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-5" onclick="selection('likelihood5', 'likelihood')"></button>
+                <button id="likelihood6" data-response_id="6" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-6" onclick="selection('likelihood6', 'likelihood')"></button>
+                <button id="likelihood7" data-response_id="7" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-7" onclick="selection('likelihood7', 'likelihood')"></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="question-box" class="instructions-stim-container">
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <p class="question-text" id="questionID2" data-question_id="appeal" data-i18n="litw-adsurvey-question1-2"></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="btn-group">
+                <button id="appeal1" data-response_id="1" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-1" onclick="selection('appeal1', 'appeal')"></button>
+                <button id="appeal2" data-response_id="2" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-2" onclick="selection('appeal2', 'appeal')"></button>
+                <button id="appeal3" data-response_id="3" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-3" onclick="selection('appeal3', 'appeal')"></button>
+                <button id="appeal4" data-response_id="4" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-4" onclick="selection('appeal4', 'appeal')"></button>
+                <button id="appeal5" data-response_id="5" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-5" onclick="selection('appeal5', 'appeal')"></button>
+                <button id="appeal6" data-response_id="6" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-6" onclick="selection('appeal6', 'appeal')"></button>
+                <button id="appeal7" data-response_id="7" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-7" onclick="selection('appeal7', 'appeal')"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    let selectionData = {}
+
+    let selection = function(buttonID, questionType) {
+        let clickedElem = document.getElementById(buttonID);
+        if(clickedElem) {
+            // Deactivate all buttons in this group first
+            document.querySelectorAll(`button[id^="${questionType}"]`).forEach(btn => {
+                if(btn.classList.contains('active')) {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Activate only the clicked button
+            clickedElem.classList.add('active');
+            
+            let responseID = clickedElem.dataset.response_id;
+            selectionData[questionType] = responseID;
+            
+            // Show next button if both questions are answered
+            if(selectionData.likelihood && selectionData.appeal) {
+                LITW.utils.showNextButton(() => { 
+                    LITW.data.submitStudyData({
+                        dataType: "adSurvey",
+                        imageNumber: selectedImages[currentImageIndex],
+                        likelihood: selectionData.likelihood,
+                        appeal: selectionData.appeal
+                    });
+                });
+            }
+        }
+    }
+</script> 
