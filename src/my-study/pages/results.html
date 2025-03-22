@@ -1,0 +1,132 @@
+<!-- Template for the results page -->
+<h3 class="bolded-blue" style="text-align: center" data-i18n="litw-results-header"></h3>
+<p class = "text-center" data-i18n="litw-results-detail-title"></p>
+
+<!-- Add this section for the analysis results -->
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h5>AI-Generated Images ({{data.ai_stats.total}})</h5>
+                </div>
+                <div class="card-body">
+                    <p>You rated these images as:</p>
+                    <ul>
+                        <li>Creativity: {{data.ai_stats.creative_percent}}% highly creative</li>
+                        <li>Visual Appeal: {{data.ai_stats.appeal_percent}}% highly appealing</li>
+                        <li>Likelihood to Click: {{data.ai_stats.click_percent}}% highly clickable</li>
+                    </ul>
+                    <div class="text-center mt-4">
+                        <p class="mb-2">An AI-Generated Image You Rated:</p>
+                        <img src="./img/105-edited/{{data.ai_stats.sample_image}}" 
+                             alt="Sample AI Image" 
+                             class="img-fluid" 
+                             style="max-width: 200px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h5>Human-Created Images ({{data.human_stats.total}})</h5>
+                </div>
+                <div class="card-body">
+                    <p>Your ratings for these images were:</p>
+                    <ul>
+                        <li>Creativity: {{data.human_stats.creative_percent}}% highly creative</li>
+                        <li>Visual Appeal: {{data.human_stats.appeal_percent}}% highly appealing</li>
+                        <li>Likelihood to Click: {{data.human_stats.click_percent}}% highly clickable</li>
+                    </ul>
+                    <div class="text-center mt-4">
+                        <p class="mb-2">A Human-Created Image You Rated:</p>
+                        <img src="./img/105-edited/{{data.human_stats.sample_image}}" 
+                             alt="Sample Human Image" 
+                             class="img-fluid" 
+                             style="max-width: 200px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+{{#if data.code}}
+<h5 style="text-align: center">
+    <span data-i18n="litw-results-code"></span>
+    <span>{{ data.code }}</span>
+</h5>
+<br>
+{{/if}}
+<!-- 
+<div class="accordion pb-4" id="accordionPanelsStayOpenExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                    aria-expanded="true" aria-controls="collapseOne"
+                    onclick="LITW.tracking.recordClick('results:detail')"
+                    data-i18n="litw-results-detail-title">
+            </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+            <div class="accordion-body pb-4">
+                <div id="results-main" class="container center-content p-0">
+                    <h5 class="text-center p-2" data-i18n="litw-results-detail-p1"></h5>
+                    <img src="./img/cat-computer.png" class="img-fluid" alt="Cat Computer">
+                    <div class="p-4">
+                        <p data-i18n="litw-results-detail-p2"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                    aria-controls="panelsStayOpen-collapseTwo" onclick="LITW.tracking.recordClick('results:explain')"
+                    data-i18n="litw-results-explain-title">
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
+            <div class="accordion-body">
+                <div id="results-explain" class="p-4">
+                    <h6 data-i18n="litw-results-explain-p1"></h6>
+                    <ul>
+                        <li data-i18n="litw-results-explain-p2"></li>
+                        <li data-i18n="litw-results-explain-p3"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                    aria-controls="panelsStayOpen-collapseThree"
+                    onclick="LITW.tracking.recordClick('results:references')"
+                    data-i18n="litw-results-ref-title">
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
+            <div class="accordion-body">
+                <div id="results-references" class="p-4">
+                    <p data-i18n="litw-results-ref-p1"></p>
+                    <p data-i18n="litw-results-ref-p2"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<br>
+<div id="results-footer"></div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //TODO: trigger post-loading functions?
+    });
+</script>

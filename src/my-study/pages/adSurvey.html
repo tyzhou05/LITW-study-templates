@@ -45,6 +45,29 @@
         color: #2c3e50;
         text-align: center;
     }
+
+    .ad-container {
+        width: 100%;
+        max-width: 300px; /* Adjust base width */
+        margin: 0 auto 2rem; /* Added bottom margin to prevent overlap */
+        display: block;
+        height: auto; /* Remove fixed height */
+    }
+    
+    .ad-image {
+        width: 100%;
+        height: auto; /* Let height adjust based on aspect ratio */
+        object-fit: contain;
+        display: block;
+        max-width: 100%;
+    }
+
+    /* Override Bootstrap's img-fluid */
+    #currentAd.img-fluid {
+        width: 100% !important;
+        height: auto !important; /* Maintain aspect ratio */
+        max-width: 300px !important; /* Match container width */
+    }
 </style>
 
 <div class="row">
@@ -53,11 +76,17 @@
     </div>
 </div>
 
+<!-- <div class="text-center mb-3">
+    <span>{{progress.current}} / {{progress.total}} Advertisements</span>
+</div> -->
+
 {{> prog progress}}
 
 <div id="questions">
     <div class="text-center mb-4">
-        <img id="currentAd" class="img-fluid" src="{{currentImage}}" alt="Facebook Advertisement">
+        <div class="ad-container">
+            <img id="currentAd" src="{{currentImage}}" alt="Facebook Advertisement" class="ad-image">
+        </div>
     </div>
 
     <p class="main-question" data-i18n="litw-adsurvey-question1"></p>
@@ -113,38 +142,87 @@
             </div>
         </div>
     </div>
+
+    <div id="question-box" class="instructions-stim-container">
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <p class="question-text" id="questionID3" data-question_id="creative" data-i18n="litw-adsurvey-question1-3"></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="btn-group">
+                <button id="creative1" data-response_id="1" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-1" onclick="selection('creative1', 'creative')"></button>
+                <button id="creative2" data-response_id="2" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-2" onclick="selection('creative2', 'creative')"></button>
+                <button id="creative3" data-response_id="3" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-3" onclick="selection('creative3', 'creative')"></button>
+                <button id="creative4" data-response_id="4" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-4" onclick="selection('creative4', 'creative')"></button>
+                <button id="creative5" data-response_id="5" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-5" onclick="selection('creative5', 'creative')"></button>
+                <button id="creative6" data-response_id="6" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-6" onclick="selection('creative6', 'creative')"></button>
+                <button id="creative7" data-response_id="7" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-7" onclick="selection('creative7', 'creative')"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- <button id="btn-next-page" style="display: none;" onclick="$('#btn-next-page').click()">Next</button> -->
+
+    <!-- <div class="row">
+        <div class="col d-flex justify-content-center">
+            <button type="button" class="btn btn-primary btn-lg" data-i18n="litw-study-intro-button" onclick="$('#btn-next-page').click()"></button>
+        </div>
+    </div> -->
 </div>
 
 <script type="text/javascript">
-    let selectionData = {}
+    window.selectionData = {};
 
     let selection = function(buttonID, questionType) {
         let clickedElem = document.getElementById(buttonID);
         if(clickedElem) {
-            // Deactivate all buttons in this group first
             document.querySelectorAll(`button[id^="${questionType}"]`).forEach(btn => {
-                if(btn.classList.contains('active')) {
-                    btn.classList.remove('active');
-                }
+                btn.classList.remove('active');
             });
-            
-            // Activate only the clicked button
             clickedElem.classList.add('active');
             
-            let responseID = clickedElem.dataset.response_id;
-            selectionData[questionType] = responseID;
+            window.selectionData[questionType] = clickedElem.dataset.response_id;
             
-            // Show next button if both questions are answered
-            if(selectionData.likelihood && selectionData.appeal) {
-                LITW.utils.showNextButton(() => { 
-                    LITW.data.submitStudyData({
-                        dataType: "adSurvey",
-                        imageNumber: selectedImages[currentImageIndex],
-                        likelihood: selectionData.likelihood,
-                        appeal: selectionData.appeal
-                    });
-                });
+            // Check if all questions are answered
+            const hasAllResponses = 
+                typeof window.selectionData.likelihood !== 'undefined' &&
+                typeof window.selectionData.appeal !== 'undefined' &&
+                typeof window.selectionData.creative !== 'undefined';
+
+            if (hasAllResponses) {
+                LITW.utils.showNextButton();
             }
         }
     }
+
+    function updateNextButtonVisibility() {
+        const hasAllResponses = 
+            typeof window.selectionData.likelihood !== 'undefined' &&
+            typeof window.selectionData.appeal !== 'undefined' &&
+            typeof window.selectionData.creative !== 'undefined';
+
+        if (hasAllResponses) {
+            LITW.utils.showNextButton();
+        } else {
+            LITW.utils.hideNextButton();
+        }
+    }
+
+    function resetSelections() {
+        window.selectionData = {};
+        document.querySelectorAll('.btn-outline-primary').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        LITW.utils.hideNextButton();
+    }
+
+    document.addEventListener('DOMContentLoaded', resetSelections);
 </script> 
