@@ -168,61 +168,58 @@
             </div>
         </div>
     </div>
-
-    <!-- <button id="btn-next-page" style="display: none;" onclick="$('#btn-next-page').click()">Next</button> -->
-
-    <!-- <div class="row">
-        <div class="col d-flex justify-content-center">
-            <button type="button" class="btn btn-primary btn-lg" data-i18n="litw-study-intro-button" onclick="$('#btn-next-page').click()"></button>
-        </div>
-    </div> -->
 </div>
 
 <script type="text/javascript">
-    window.selectionData = {};
+    if (!window.adSurveyInitialized) {
+        window.adSurveyInitialized = true;
+        window.selectionData = {};
 
-    let selection = function(buttonID, questionType) {
-        let clickedElem = document.getElementById(buttonID);
-        if(clickedElem) {
-            document.querySelectorAll(`button[id^="${questionType}"]`).forEach(btn => {
-                btn.classList.remove('active');
-            });
-            clickedElem.classList.add('active');
-            
-            window.selectionData[questionType] = clickedElem.dataset.response_id;
-            
-            // Check if all questions are answered
+        window.checkAllResponses = function() {
             const hasAllResponses = 
                 typeof window.selectionData.likelihood !== 'undefined' &&
                 typeof window.selectionData.appeal !== 'undefined' &&
                 typeof window.selectionData.creative !== 'undefined';
 
+            console.log("Checking responses...");
+            console.log("selectionData: ", window.selectionData);
+            console.log("hasAllResponses: ", hasAllResponses);
+            
+            //should have all responses via LITW-utils
             if (hasAllResponses) {
                 LITW.utils.showNextButton();
+            } else {
+                LITW.utils.hideNextButton();
+            }
+            return hasAllResponses;
+        }
+
+        window.selection = function(buttonID, questionType) {
+            let clickedElem = document.getElementById(buttonID);
+            if(clickedElem) {
+                document.querySelectorAll(`button[id^="${questionType}"]`).forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                clickedElem.classList.add('active');
+                
+                window.selectionData[questionType] = clickedElem.dataset.response_id;
+                window.checkAllResponses();
             }
         }
-    }
 
-    function updateNextButtonVisibility() {
-        const hasAllResponses = 
-            typeof window.selectionData.likelihood !== 'undefined' &&
-            typeof window.selectionData.appeal !== 'undefined' &&
-            typeof window.selectionData.creative !== 'undefined';
-
-        if (hasAllResponses) {
-            LITW.utils.showNextButton();
-        } else {
-            LITW.utils.hideNextButton();
+        window.resetSelections = function() {
+            window.selectionData = {};
+            document.querySelectorAll('.btn-outline-primary').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            window.checkAllResponses();
         }
+        document.removeEventListener('DOMContentLoaded', window.resetSelections);
+        document.removeEventListener('template-display', window.resetSelections);
+        document.addEventListener('DOMContentLoaded', window.resetSelections);
+        document.addEventListener('template-display', window.resetSelections);
+        window.resetSelections();
+    } else {
+        window.resetSelections();
     }
-
-    function resetSelections() {
-        window.selectionData = {};
-        document.querySelectorAll('.btn-outline-primary').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        LITW.utils.hideNextButton();
-    }
-
-    document.addEventListener('DOMContentLoaded', resetSelections);
 </script> 
