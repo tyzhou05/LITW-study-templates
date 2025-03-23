@@ -29,7 +29,6 @@ import progressHTML from "./pages/progress.html";
 Handlebars.registerPartial('prog', Handlebars.compile(progressHTML));
 import introHTML from "./pages/introduction.html";
 import irb_LITW_HTML from "./pages/irb.html";
-import questHTML from "./pages/questionnaire.html";
 import demographicsHTML from "./pages/demographics.html";
 import resultsHTML from "./pages/results.html";
 import resultsFooterHTML from "../templates/results-footer.html";
@@ -39,7 +38,6 @@ import adSurveyHTML from "./pages/adSurvey.html";
 //CONVERT HTML INTO TEMPLATES
 let introTemplate = Handlebars.compile(introHTML);
 let irbLITWTemplate = Handlebars.compile(irb_LITW_HTML);
-let questTemplate = Handlebars.compile(questHTML);
 let demographicsTemplate = Handlebars.compile(demographicsHTML);
 let resultsTemplate = Handlebars.compile(resultsHTML);
 let resultsFooterTemplate = Handlebars.compile(resultsFooterHTML);
@@ -133,15 +131,15 @@ module.exports = (function(exports) {
 				template_data: {
 					local_data_id: 'LITW_DEMOGRAPHICS'
 				},
-				finish: function(){
+				finish: function() {
 					let demographicData = $('#demographicsForm').alpaca().getValue();
 					participantData.demographics = {
-						age: demographicData.age,
-						gender: demographicData.gender,
-						country: demographicData.country,
-						language: demographicData.language,
+						age: demographicData["demographics-age"],
+						gender: demographicData["demographics-gender"],
+						country: demographicData["demographics-country-live"],
+						language: demographicData["demographics-language-native"],
 					};
-					//log data via LITW API
+					
 					console.log("...participantData.demographics: " + JSON.stringify(participantData.demographics));
 					LITW.data.submitStudyData({
 						dataType: "demographics",
@@ -149,28 +147,28 @@ module.exports = (function(exports) {
 					});
 				}
 			},
-			QUESTIONNAIRE_1: {
-				name: "quest1",
-				type: LITW.engine.SLIDE_TYPE.SHOW_SLIDE,
-				display_element_id: "quest1",
-				template: questTemplate,
-				display_next_button: false,
-				template_data: () => {
-					return getQuest1Data('quest1', 75)
-				},
-				finish: function() {
-					// Get the selected values for each question
-					let questData = {};
-					questData["likelihood"] = $("input[name='q1']:checked").val();
-					questData["appeal"] = $("input[name='q2']:checked").val();
-					questData["colorfulness"] = $("input[name='q3']:checked").val();
-					questData["complexity"] = $("input[name='q4']:checked").val();
+			// QUESTIONNAIRE_1: {
+			// 	name: "quest1",
+			// 	type: LITW.engine.SLIDE_TYPE.SHOW_SLIDE,
+			// 	display_element_id: "quest1",
+			// 	template: questTemplate,
+			// 	display_next_button: false,
+			// 	template_data: () => {
+			// 		return getQuest1Data('quest1', 75)
+			// 	},
+			// 	finish: function() {
+			// 		// Get the selected values for each question
+			// 		let questData = {};
+			// 		questData["likelihood"] = $("input[name='q1']:checked").val();
+			// 		questData["appeal"] = $("input[name='q2']:checked").val();
+			// 		questData["colorfulness"] = $("input[name='q3']:checked").val();
+			// 		questData["complexity"] = $("input[name='q4']:checked").val();
 
-					console.log("...questData: " + JSON.stringify(questData));
+			// 		console.log("...questData: " + JSON.stringify(questData));
 					
-					LITW.data.submitStudyData(questData);
-				}
-			},
+			// 		LITW.data.submitStudyData(questData);
+			// 	}
+			// },
 			AD_SURVEY: {
 				name: "ad_survey",
 				type: LITW.engine.SLIDE_TYPE.SHOW_SLIDE,
