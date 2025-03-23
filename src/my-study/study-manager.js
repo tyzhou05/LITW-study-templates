@@ -142,6 +142,7 @@ module.exports = (function(exports) {
 						language: demographicData.language,
 					};
 					//log data via LITW API
+					console.log("...participantData.demographics: " + JSON.stringify(participantData.demographics));
 					LITW.data.submitStudyData({
 						dataType: "demographics",
 						...participantData.demographics
@@ -159,10 +160,13 @@ module.exports = (function(exports) {
 				},
 				finish: function() {
 					// Get the selected values for each question
+					let questData = {};
 					questData["likelihood"] = $("input[name='q1']:checked").val();
 					questData["appeal"] = $("input[name='q2']:checked").val();
 					questData["colorfulness"] = $("input[name='q3']:checked").val();
 					questData["complexity"] = $("input[name='q4']:checked").val();
+
+					console.log("...questData: " + JSON.stringify(questData));
 					
 					LITW.data.submitStudyData(questData);
 				}
@@ -211,6 +215,11 @@ module.exports = (function(exports) {
 					currentImageIndex++;
 					
 					if (currentImageIndex >= totalImagesToShow) {
+						console.log("...participantData.responses: " + JSON.stringify({
+							dataType: "finalData",
+							demographics: participantData.demographics,
+							imageRatings: participantData.responses
+						}));
 						LITW.data.submitStudyData({
 							dataType: "finalData",
 							demographics: participantData.demographics,
