@@ -68,6 +68,10 @@
         height: auto !important; /* Maintain aspect ratio */
         max-width: 300px !important; /* Match container width */
     }
+
+    .emphasis {
+        font-weight: 700;
+    }
 </style>
 
 <div class="row">
@@ -89,12 +93,16 @@
         </div>
     </div>
 
-    <p class="main-question" data-i18n="litw-adsurvey-question1"></p>
+    <!-- <p class="main-question" data-i18n="litw-adsurvey-question1"></p> -->
+    <p class="main-question">For each design evaluation, <strong>we want your quick, first impression feedback</strong>, similar to how you would respond if you were scrolling through social media and saw an ad. <strong>Typically people spend 15-30 seconds on each design.</strong></p>
+    <p class="main-question"> Look at the image quickly and then rate it below.</p>
     
     <div id="question-box" class="instructions-stim-container">
         <div class="row">
             <div class="col d-flex justify-content-center">
-                <p class="question-text" id="questionID1" data-question_id="likelihood" data-i18n="litw-adsurvey-question1-1"></p>
+                <p class="question-text" id="questionID1" data-question_id="likelihood">
+                    If I saw this advertisement on social media, <span class="emphasis">I would click it</span>.
+                </p>
             </div>
         </div>
         <div class="row">
@@ -120,7 +128,9 @@
     <div id="question-box" class="instructions-stim-container">
         <div class="row">
             <div class="col d-flex justify-content-center">
-                <p class="question-text" id="questionID2" data-question_id="appeal" data-i18n="litw-adsurvey-question1-2"></p>
+                <p class="question-text" id="questionID2" data-question_id="appeal">
+                    This advertisement is <span class="fw-bold">visually appealing</span>.
+                </p>
             </div>
         </div>
         <div class="row">
@@ -146,7 +156,9 @@
     <div id="question-box" class="instructions-stim-container">
         <div class="row">
             <div class="col d-flex justify-content-center">
-                <p class="question-text" id="questionID3" data-question_id="creative" data-i18n="litw-adsurvey-question1-3"></p>
+                <p class="question-text" id="questionID3" data-question_id="creative">
+                    This advertisement's design is <span class="fw-bold">creative</span>.
+                </p>
             </div>
         </div>
         <div class="row">

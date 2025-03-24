@@ -46,7 +46,7 @@ let adSurveyTemplate = Handlebars.compile(adSurveyHTML);
 
 // At the top level, add these variables
 let currentImageIndex = 0;
-const totalImagesToShow = 14;
+const totalImagesToShow = 11;
 let selectedImages = [];
 
 // Create an array of the actual image filenames
@@ -371,7 +371,7 @@ class StudyManager {
 	constructor() {
 		this.selectedImages = [];
 		this.currentImageIndex = 0;
-		this.totalImagesToShow = 14;
+		this.totalImagesToShow = 11;
 		this.responses = [];
 		
 		// Initialize when constructed
@@ -382,7 +382,7 @@ class StudyManager {
 		// Create array of all possible indices
 		const allIndices = Array.from({length: IMAGE_FILES.length}, (_, i) => i);
 		
-		// Randomly select 14 indices
+		// Randomly select 11 indices
 		for (let i = allIndices.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
 			[allIndices[i], allIndices[j]] = [allIndices[j], allIndices[i]];
