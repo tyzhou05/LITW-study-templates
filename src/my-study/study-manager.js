@@ -176,12 +176,9 @@ module.exports = (function(exports) {
 				template: adSurveyTemplate,
 				display_next_button: false,
 				on_display: function() {
-					// Reset selections when showing a new image
 					if (typeof resetSelections === 'function') {
 						resetSelections();
 					}
-					
-					// Reset view to top of the page
 					window.scrollTo(0, 0);
 				},
 				template_data: () => {
@@ -195,23 +192,25 @@ module.exports = (function(exports) {
 					}
 				},
 				finish: function() {
-					// Verify all responses exist before proceeding
 					if (!window.selectionData.likelihood || 
 						!window.selectionData.appeal || 
-						!window.selectionData.creative) {
-						return false; // Prevent proceeding if responses are incomplete
+						!window.selectionData.creative ||
+						!window.selectionData.weird) {
+						return false;
 					}
 
-					// If we get here, all responses are present
 					participantData.responses.push({
 						imageId: IMAGE_FILES[selectedImages[currentImageIndex]],
 						likelihood: parseInt(window.selectionData.likelihood),
 						appeal: parseInt(window.selectionData.appeal),
-						creative: parseInt(window.selectionData.creative)
+						creative: parseInt(window.selectionData.creative),
+						weird: parseInt(window.selectionData.weird),
+						timestamp: new Date().getTime()
 					});
 
 					currentImageIndex++;
 					
+					//if total images to show is reached, calculate results
 					if (currentImageIndex >= totalImagesToShow) {
 						console.log("...participantData.responses: " + JSON.stringify({
 							dataType: "finalData",
@@ -228,7 +227,7 @@ module.exports = (function(exports) {
 						window.scrollTo(0, 0);
 						LITW.utils.showSlide("ad-survey");
 					}
-					return true;  // Allow proceeding only if all validations pass
+					return true;
 				}
 			},
 			COMMENTS: {
@@ -251,76 +250,73 @@ module.exports = (function(exports) {
 				display_next_button: false,
 				type: LITW.engine.SLIDE_TYPE.CALL_FUNCTION,
 				call_fn: function(){
+					window.scrollTo(0, 0);
 					calculateResults();
 				}
 			}
 		}
 	};
 
+	//configures timeline here; would be place to switch demographics
 	function configureTimeline() {
 		timeline.push(config.slides.INTRODUCTION);
 		timeline.push(config.slides.INFORMED_CONSENT_LITW);
 		timeline.push(config.slides.DEMOGRAPHICS);
 
-		// Add survey slides for each image
 		for (let i = 0; i < totalImagesToShow; i++) {
 			timeline.push(config.slides.AD_SURVEY);
 		}
 
-		// Remove comments page and just keep results
 		timeline.push(config.slides.RESULTS);
 		return timeline;
 	}
 
 	function calculateResults() {
-		// Analyze the responses
-		const analysis = {
-			ai_images: { count: 0, high_creative: 0, high_appeal: 0, high_click: 0, images: [] },
-			human_images: { count: 0, high_creative: 0, high_appeal: 0, high_click: 0, images: [] }
-		};
+		let aiImages = [];
+		let humanImages = [];
 
 		participantData.responses.forEach(response => {
-			// Determine if image was AI or human created
-			const isAI = response.imageId.includes('C');
-			const category = isAI ? 'ai_images' : 'human_images';
-			
-			// Store the image filename
-			analysis[category].images.push(response.imageId);
-			
-			// Increment counter for this category
-			analysis[category].count++;
-			
-			// Check high ratings (assuming 7-point scale, counting 5-7 as "high")
-			if (parseInt(response.creative) >= 5) analysis[category].high_creative++;
-			if (parseInt(response.appeal) >= 5) analysis[category].high_appeal++;
-			if (parseInt(response.likelihood) >= 5) analysis[category].high_click++;
+			if (isAIGenerated(response.imageId)) {
+				aiImages.push(response);
+			} else {
+				humanImages.push(response);
+			}
 		});
 
-		// Select random sample images
-		const randomAIImage = analysis.ai_images.images[Math.floor(Math.random() * analysis.ai_images.images.length)];
-		const randomHumanImage = analysis.human_images.images[Math.floor(Math.random() * analysis.human_images.images.length)];
-
-		let results_data = {
-			ai_stats: {
-				total: analysis.ai_images.count,
-				creative_percent: Math.round((analysis.ai_images.high_creative / analysis.ai_images.count) * 100),
-				appeal_percent: Math.round((analysis.ai_images.high_appeal / analysis.ai_images.count) * 100),
-				click_percent: Math.round((analysis.ai_images.high_click / analysis.ai_images.count) * 100),
-				sample_image: randomAIImage
-			},
-			human_stats: {
-				total: analysis.human_images.count,
-				creative_percent: Math.round((analysis.human_images.high_creative / analysis.human_images.count) * 100),
-				appeal_percent: Math.round((analysis.human_images.high_appeal / analysis.human_images.count) * 100),
-				click_percent: Math.round((analysis.human_images.high_click / analysis.human_images.count) * 100),
-				sample_image: randomHumanImage
-			}
+		const aiStats = {
+			total: aiImages.length,
+			creative_percent: calculateHighPercentage(aiImages, 'creative'),
+			appeal_percent: calculateHighPercentage(aiImages, 'appeal'),
+			click_percent: calculateHighPercentage(aiImages, 'likelihood'),
+			weird_percent: calculateHighPercentage(aiImages, 'weird'),
+			sample_image: aiImages.length > 0 ? aiImages[0].imageId : ''
 		};
 
-		showResults(results_data);
+		const humanStats = {
+			total: humanImages.length,
+			creative_percent: calculateHighPercentage(humanImages, 'creative'),
+			appeal_percent: calculateHighPercentage(humanImages, 'appeal'),
+			click_percent: calculateHighPercentage(humanImages, 'likelihood'),
+			weird_percent: calculateHighPercentage(humanImages, 'weird'),
+			sample_image: humanImages.length > 0 ? humanImages[0].imageId : ''
+		};
+
+		showResults({
+			ai_stats: aiStats,
+			human_stats: humanStats
+		}, true);
+	}
+
+	function calculateHighPercentage(images, attribute) {
+		if (images.length === 0) return 0;
+		
+		const highRatings = images.filter(img => img[attribute] >= 5).length;
+		return Math.round((highRatings / images.length) * 100);
 	}
 
 	function showResults(results = {}, showFooter = false) {
+		window.scrollTo(0, 0);
+		
 		let results_div = $("#results");
 		let recom_studies = [];
 		LITW.engage.getStudiesRecommendation(config.study_id, (studies) => {recom_studies = studies});
@@ -348,7 +344,7 @@ module.exports = (function(exports) {
 	}
 
 	function bootstrap() {
-		initializeImageSelection();  // Initialize image selection before starting study
+		initializeImageSelection();
 		let good_config = LITW.engine.configure_study(config.preLoad, config.languages,
 			configureTimeline(), config.study_id);
 		if (good_config){
@@ -397,7 +393,11 @@ class StudyManager {
 	saveResponse(response) {
 		this.responses.push({
 			imageId: this.selectedImages[this.currentImageIndex],
-			...response
+			likelihood: response.likelihood,
+			appeal: response.appeal,
+			creative: response.creative,
+			weird: response.weird,
+			timestamp: new Date().getTime()
 		});
 		
 		this.currentImageIndex++;
@@ -430,4 +430,8 @@ function getQuest1Data(quest_id, completion) {
 			text_before: ""
 		}
 	}
+}
+
+function isAIGenerated(imageId) {
+	return imageId.includes('C');
 }

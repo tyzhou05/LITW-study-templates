@@ -94,7 +94,7 @@
     </div>
 
     <!-- <p class="main-question" data-i18n="litw-adsurvey-question1"></p> -->
-    <p class="main-question">For each design evaluation, <strong>we want your quick, first impression feedback</strong>, similar to how you would respond if you were scrolling through social media and saw an ad. <strong>Typically people spend 15-30 seconds on each design.</strong></p>
+    <p class="main-question">For each design evaluation, <strong>we want your quick, first impression feedback</strong>, similar to how you would respond if you were scrolling through social media and saw an ad. <strong>Typically people spend 15-30 seconds on each design.</strong></p>
     <p class="main-question"> Look at the image quickly and then rate it below.</p>
     
     <div id="question-box" class="instructions-stim-container">
@@ -180,6 +180,34 @@
             </div>
         </div>
     </div>
+
+    <div id="question-box" class="instructions-stim-container">
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <p class="question-text" id="questionID4" data-question_id="weird">
+                    The advertisement looks <span class="fw-bold">weird</span>.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="btn-group">
+                <button id="weird1" data-response_id="1" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-1" onclick="selection('weird1', 'weird')"></button>
+                <button id="weird2" data-response_id="2" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-2" onclick="selection('weird2', 'weird')"></button>
+                <button id="weird3" data-response_id="3" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-3" onclick="selection('weird3', 'weird')"></button>
+                <button id="weird4" data-response_id="4" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-4" onclick="selection('weird4', 'weird')"></button>
+                <button id="weird5" data-response_id="5" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-5" onclick="selection('weird5', 'weird')"></button>
+                <button id="weird6" data-response_id="6" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-6" onclick="selection('weird6', 'weird')"></button>
+                <button id="weird7" data-response_id="7" type="button" class="btn btn-outline-primary" data-bs-toggle="button"
+                        data-i18n="litw-adsurvey-likert-7" onclick="selection('weird7', 'weird')"></button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -191,13 +219,13 @@
             const hasAllResponses = 
                 typeof window.selectionData.likelihood !== 'undefined' &&
                 typeof window.selectionData.appeal !== 'undefined' &&
-                typeof window.selectionData.creative !== 'undefined';
+                typeof window.selectionData.creative !== 'undefined' &&
+                typeof window.selectionData.weird !== 'undefined';
 
             console.log("Checking responses...");
             console.log("selectionData: ", window.selectionData);
             console.log("hasAllResponses: ", hasAllResponses);
             
-            //should have all responses via LITW-utils
             if (hasAllResponses) {
                 LITW.utils.showNextButton();
             } else {
