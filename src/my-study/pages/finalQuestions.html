@@ -1,0 +1,183 @@
+<style>
+    .btn-outline-primary {
+        background-color: transparent;
+        border: 1px solid #0d6efd;
+        color: #0d6efd;
+        border-right: 1px solid #0d6efd !important;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #6788b9;
+        color: white;
+    }
+
+    .btn-outline-primary.active {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    .question-box {
+        margin: 20px 0;
+    }
+
+    .btn-group {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    .question-text {
+        margin: 15px 0;
+        font-size: 1.1rem;
+        color: #2c3e50;
+    }
+
+    .main-question {
+        margin: 25px 0;
+        font-size: 1.3rem;
+        color: #2c3e50;
+        text-align: center;
+    }
+
+    .btn-group .btn-outline-primary {
+        flex: 1;
+        padding: 6px 0;
+        min-width: 0;
+    }
+
+    .instructions-stim-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+</style>
+
+<div class="row">
+    <div class="col d-flex justify-content-center">
+        <h3 class="bolded-blue" data-i18n="litw-finalquestions-title"></h3>
+    </div>
+</div>
+
+<div id="questions">
+    <!-- 11pt likert scale, q1-->
+    <div id="question-box" class="instructions-stim-container">
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <p class="question-text" id="questionID1" data-question_id="ai_estimate">
+                    Out of the 11 images you rated, <span class="fw-bold">how many</span> do you think were created with the help of artificial intelligence (AI)? Please provide your best estimate.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="btn-group">
+                <button id="estimate0" data-response_id="0" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('estimate0', 'ai_estimate')">0</button>
+                <button id="estimate1" data-response_id="1" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('estimate1', 'ai_estimate')">1</button>
+                <button id="estimate2" data-response_id="2" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('estimate2', 'ai_estimate')">2</button>
+                <button id="estimate3" data-response_id="3" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('estimate3', 'ai_estimate')">3</button>
+                <button id="estimate4" data-response_id="4" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('estimate4', 'ai_estimate')">4</button>
+                <button id="estimate5" data-response_id="5" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('estimate5', 'ai_estimate')">5</button>
+                <button id="estimate6" data-response_id="6" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('estimate6', 'ai_estimate')">6</button>
+                <button id="estimate7" data-response_id="7" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('estimate7', 'ai_estimate')">7</button>
+                <button id="estimate8" data-response_id="8" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('estimate8', 'ai_estimate')">8</button>
+                <button id="estimate9" data-response_id="9" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('estimate9', 'ai_estimate')">9</button>
+                <button id="estimate10" data-response_id="10" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('estimate10', 'ai_estimate')">10</button>
+                <button id="estimate11" data-response_id="11" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('estimate11', 'ai_estimate')">11</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7pt likert scale, q2 -->
+    <div id="question-box" class="instructions-stim-container">
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <p class="question-text" id="questionID2" data-question_id="ai_comfort">
+                    I am <span class="fw-bold">comfortable with designers using AI tools</span> to create advertisements.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="btn-group">
+                <button id="comfort1" data-response_id="1" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('comfort1', 'ai_comfort')" data-i18n="litw-adsurvey-likert-1"></button>
+                <button id="comfort2" data-response_id="2" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('comfort2', 'ai_comfort')" data-i18n="litw-adsurvey-likert-2"></button>
+                <button id="comfort3" data-response_id="3" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('comfort3', 'ai_comfort')" data-i18n="litw-adsurvey-likert-3"></button>
+                <button id="comfort4" data-response_id="4" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('comfort4', 'ai_comfort')" data-i18n="litw-adsurvey-likert-4"></button>
+                <button id="comfort5" data-response_id="5" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('comfort5', 'ai_comfort')" data-i18n="litw-adsurvey-likert-5"></button>
+                <button id="comfort6" data-response_id="6" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('comfort6', 'ai_comfort')" data-i18n="litw-adsurvey-likert-6"></button>
+                <button id="comfort7" data-response_id="7" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('comfort7', 'ai_comfort')" data-i18n="litw-adsurvey-likert-7"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7pt likert scale, q3-->
+    <div id="question-box" class="instructions-stim-container">
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <p class="question-text" id="questionID3" data-question_id="ai_familiar">
+                    I am <span class="fw-bold">familiar with AI-generated images or advertisements</span>.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="btn-group">
+                <button id="familiar1" data-response_id="1" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('familiar1', 'ai_familiar')" data-i18n="litw-adsurvey-likert-1"></button>
+                <button id="familiar2" data-response_id="2" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('familiar2', 'ai_familiar')" data-i18n="litw-adsurvey-likert-2"></button>
+                <button id="familiar3" data-response_id="3" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('familiar3', 'ai_familiar')" data-i18n="litw-adsurvey-likert-3"></button>
+                <button id="familiar4" data-response_id="4" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('familiar4', 'ai_familiar')" data-i18n="litw-adsurvey-likert-4"></button>
+                <button id="familiar5" data-response_id="5" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('familiar5', 'ai_familiar')" data-i18n="litw-adsurvey-likert-5"></button>
+                <button id="familiar6" data-response_id="6" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('familiar6', 'ai_familiar')" data-i18n="litw-adsurvey-likert-6"></button>
+                <button id="familiar7" data-response_id="7" type="button" class="btn btn-outline-primary" data-bs-toggle="button" onclick="selection('familiar7', 'ai_familiar')" data-i18n="litw-adsurvey-likert-7"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (!window.finalQuestionsInitialized) {
+        window.finalQuestionsInitialized = true;
+        window.selectionData = {};
+
+        window.checkAllResponses = function() {
+            const hasAllResponses = 
+                typeof window.selectionData.ai_estimate !== 'undefined' &&
+                typeof window.selectionData.ai_comfort !== 'undefined' &&
+                typeof window.selectionData.ai_familiar !== 'undefined';
+
+            if (hasAllResponses) {
+                LITW.utils.showNextButton();
+            } else {
+                LITW.utils.hideNextButton();
+            }
+            return hasAllResponses;
+        }
+
+        window.selection = function(buttonID, questionType) {
+            let clickedElem = document.getElementById(buttonID);
+            if(clickedElem) {
+                // Remove active class from all buttons in the same group
+                clickedElem.parentElement.querySelectorAll('.btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                clickedElem.classList.add('active');
+                
+                window.selectionData[questionType] = clickedElem.dataset.response_id;
+                window.checkAllResponses();
+            }
+        }
+
+        window.resetSelections = function() {
+            window.selectionData = {};
+            document.querySelectorAll('.btn-outline-primary').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            window.checkAllResponses();
+        }
+
+        document.removeEventListener('DOMContentLoaded', window.resetSelections);
+        document.removeEventListener('template-display', window.resetSelections);
+        document.addEventListener('DOMContentLoaded', window.resetSelections);
+        document.addEventListener('template-display', window.resetSelections);
+        window.resetSelections();
+    } else {
+        window.resetSelections();
+    }
+</script> 

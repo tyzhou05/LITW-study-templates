@@ -34,6 +34,7 @@ import resultsHTML from "./pages/results.html";
 import resultsFooterHTML from "../templates/results-footer.html";
 import commentsHTML from "../templates/comments.html";
 import adSurveyHTML from "./pages/adSurvey.html";
+import finalQuestionsHTML from "./pages/finalQuestions.html";
 
 //CONVERT HTML INTO TEMPLATES
 let introTemplate = Handlebars.compile(introHTML);
@@ -43,6 +44,7 @@ let resultsTemplate = Handlebars.compile(resultsHTML);
 let resultsFooterTemplate = Handlebars.compile(resultsFooterHTML);
 let commentsTemplate = Handlebars.compile(commentsHTML);
 let adSurveyTemplate = Handlebars.compile(adSurveyHTML);
+let finalQuestionsTemplate = Handlebars.compile(finalQuestionsHTML);
 
 // At the top level, add these variables
 let currentImageIndex = 0;
@@ -140,35 +142,14 @@ module.exports = (function(exports) {
 						language: demographicData["demographics-language-native"],
 					};
 					
-					console.log("...participantData.demographics: " + JSON.stringify(participantData.demographics));
-					LITW.data.submitStudyData({
-						dataType: "demographics",
-						...participantData.demographics
-					});
+					// console.log("...participantData.demographics: " + JSON.stringify(participantData.demographics));
+					// LITW.data.submitStudyData({
+					// 	dataType: "demographics",
+					// 	...participantData.demographics
+					// });
 				}
 			},
-			// QUESTIONNAIRE_1: {
-			// 	name: "quest1",
-			// 	type: LITW.engine.SLIDE_TYPE.SHOW_SLIDE,
-			// 	display_element_id: "quest1",
-			// 	template: questTemplate,
-			// 	display_next_button: false,
-			// 	template_data: () => {
-			// 		return getQuest1Data('quest1', 75)
-			// 	},
-			// 	finish: function() {
-			// 		// Get the selected values for each question
-			// 		let questData = {};
-			// 		questData["likelihood"] = $("input[name='q1']:checked").val();
-			// 		questData["appeal"] = $("input[name='q2']:checked").val();
-			// 		questData["colorfulness"] = $("input[name='q3']:checked").val();
-			// 		questData["complexity"] = $("input[name='q4']:checked").val();
-
-			// 		console.log("...questData: " + JSON.stringify(questData));
-					
-			// 		LITW.data.submitStudyData(questData);
-			// 	}
-			// },
+			
 			AD_SURVEY: {
 				name: "ad_survey",
 				type: LITW.engine.SLIDE_TYPE.SHOW_SLIDE,
@@ -210,19 +191,21 @@ module.exports = (function(exports) {
 
 					currentImageIndex++;
 					
-					//if total images to show is reached, calculate results
+					//if total images to show is reached, proceed to final questions
 					if (currentImageIndex >= totalImagesToShow) {
-						console.log("...participantData.responses: " + JSON.stringify({
-							dataType: "finalData",
-							demographics: participantData.demographics,
-							imageRatings: participantData.responses
-						}));
+						// console.log("...participantData.responses: " + JSON.stringify({
+						// 	dataType: "finalData",
+						// 	demographics: participantData.demographics,
+						// 	imageRatings: participantData.responses
+						// }));
 						LITW.data.submitStudyData({
 							dataType: "finalData",
 							demographics: participantData.demographics,
 							imageRatings: participantData.responses
 						});
-						calculateResults();
+						// Instead of calling calculateResults(), show the final questions
+						window.scrollTo(0, 0);
+						LITW.utils.showSlide("final_questions");
 					} else {
 						window.scrollTo(0, 0);
 						LITW.utils.showSlide("ad-survey");
@@ -253,6 +236,43 @@ module.exports = (function(exports) {
 					window.scrollTo(0, 0);
 					calculateResults();
 				}
+			},
+			FINAL_QUESTIONS: {
+				name: "final_questions",
+				type: LITW.engine.SLIDE_TYPE.SHOW_SLIDE,
+				display_element_id: "final_questions",
+				template: finalQuestionsTemplate,
+				display_next_button: false,
+				on_display: function() {
+					if (typeof resetSelections === 'function') {
+						resetSelections();
+					}
+					window.scrollTo(0, 0);
+				},
+				finish: function() {
+					if (!window.selectionData.ai_estimate || 
+						!window.selectionData.ai_comfort || 
+						!window.selectionData.ai_familiar) {
+						return false;
+					}
+
+					// console.log("Submitting final questions data:", {
+					// 	dataType: "finalQuestions",
+					// 	ai_estimate: parseInt(window.selectionData.ai_estimate),
+					// 	ai_comfort: parseInt(window.selectionData.ai_comfort),
+					// 	ai_familiar: parseInt(window.selectionData.ai_familiar)
+					// });
+
+					LITW.data.submitStudyData({
+						dataType: "finalQuestions",
+						ai_estimate: parseInt(window.selectionData.ai_estimate),
+						ai_comfort: parseInt(window.selectionData.ai_comfort),
+						ai_familiar: parseInt(window.selectionData.ai_familiar)
+					});
+					
+					calculateResults();
+					return true;
+				}
 			}
 		}
 	};
@@ -267,6 +287,8 @@ module.exports = (function(exports) {
 			timeline.push(config.slides.AD_SURVEY);
 		}
 
+		timeline.push(config.slides.FINAL_QUESTIONS);
+		console.log("pushed final questions.")
 		timeline.push(config.slides.RESULTS);
 		return timeline;
 	}
