@@ -101,23 +101,77 @@
         text-align: center;
     }
 
-    /* Center the progress bar container */
-    .progress-container {
-        max-width: 600px;
+    .practice-intro {
+        max-width: 800px;
         margin: 0 auto;
-        padding: 0 15px;
+        padding: 20px;
+        text-align: left;
     }
-    
-    /* Adjust progress text alignment */
-    .progress-text {
-        display: flex;
-        justify-content: space-between;
+
+    .practice-intro h3 {
+        color: #2c3e50;
+        margin-bottom: 30px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+
+    .practice-intro h4 {
+        margin-top: 30px;
+        margin-bottom: 20px;
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .practice-intro ul {
+        margin-left: 20px;
+        margin-bottom: 25px;
+    }
+
+    .practice-intro li {
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+
+    .practice-intro li ul {
+        margin-top: 12px;
         margin-bottom: 5px;
     }
+
+    .practice-intro li li {
+        margin-bottom: 10px;
+    }
+
+    .start-practice-btn {
+        display: block;
+        margin: 40px auto;
+        padding: 12px 35px;
+        background-color: #0d6efd;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .start-practice-btn:hover {
+        background-color: #0b5ed7;
+    }
+
+    .practice-badge {
+        background-color: #d9534f;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
     
-    /* Fix paragraph tag closing */
-    .text-fix {
-        text-align: center;
+    .practice-intro p {
+        margin-bottom: 20px;
+        line-height: 1.6;
     }
 </style>
 
@@ -127,17 +181,37 @@
     </div>
 </div> -->
 
-<!-- Wrap progress bar in a centered container -->
-<div class="progress-container">
-    {{> prog progress}}
+<!-- Practice Introduction -->
+<div id="practice-intro" style="{{#if startedPractice}}display:none;{{/if}}">
+    <div class="practice-intro">
+        <h3>This quick exercise will help you get familiar with how you'll rate each advertisement:</h3>
+        
+        <div class="mt-4">
+            <h4>Here's how it works:</h4>
+            <ul>
+                <li>You'll see an image like below for 5 seconds.</li>
+                <li>After the countdown ends, you'll automatically move to the next page.</li>
+                <li>On the next page, you'll rate the ad based on:
+                    <ul>
+                        <li>Visual appeal</li>
+                        <li>How likely you are to click on it</li>
+                        <li>How creative and weird the design is</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        
+        <p>Remember, this is just a practice round. When you're ready, take a close look at the image we'll show you.</p>
+        
+        <button id="start-practice-button" class="start-practice-btn">Start Practice</button>
+    </div>
 </div>
 
-<!-- Image Preview Mode -->
-<div id="image-preview-mode" style="{{#if showQuestions}}display:none;{{/if}}">
+<div id="image-preview-mode" style="{{#unless startedPractice}}display:none;{{/unless}}{{#if showQuestions}}display:none;{{/if}}">
     <div class="image-preview-container">
         <p class="preview-instruction">Please look at this image for 5 seconds</p>
         <div class="ad-container">
-            <img id="previewAd" src="{{currentImage}}" alt="Advertisement Preview" class="ad-image">
+            <img id="previewAd" src="{{practiceImage}}" alt="Advertisement Preview" class="ad-image">
         </div>
         <div class="timer-display">
             <span id="timer-countdown">5</span> seconds remaining...
@@ -145,17 +219,12 @@
     </div>
 </div>
 
-<!-- Questions Mode -->
 <div id="questions" style="{{#unless showQuestions}}display:none;{{/unless}}">
     <div class="text-center mb-4">
-        <!-- Removing the image from the questions section -->
-        <!-- <div class="ad-container">
-            <img id="currentAd" src="{{currentImage}}" alt="Facebook Advertisement" class="ad-image">
-        </div> -->
+        <div class="practice-badge">PRACTICE</div>
     </div>
 
-    <!-- Fix the paragraph tag and ensure text is centered -->
-    <p class="main-question text-fix">Based on the image you just saw, please provide your <strong>first-impression ratings</strong> below.</p>
+    <p class="main-question">Based on the image you just saw, please provide your <strong>first-impression ratings</strong> below.</p>
     
     <div id="question-box" class="instructions-stim-container">
         <div class="row">
@@ -268,11 +337,17 @@
             </div>
         </div>
     </div>
+    
+    <div class="text-center mt-4 mb-4">
+        <p class="practice-badge">End of practice!</p>
+        <p>In the actual evaluation, you'll rate each design after viewing it for 5 seconds.</p>
+        <p>When you're ready, click below to begin the actual ratings.</p>
+    </div>
 </div>
 
 <script type="text/javascript">
-    if (!window.adSurveyInitialized) {
-        window.adSurveyInitialized = true;
+    if (!window.practiceSurveyInitialized) {
+        window.practiceSurveyInitialized = true;
         window.selectionData = {};
 
         window.checkAllResponses = function() {
@@ -311,9 +386,8 @@
             window.checkAllResponses();
         }
    
-        //start by defining image preview -> 5 seconds -> show likert questions
         window.handleImagePreview = function() {
-            console.log("Starting image preview timer");
+            console.log("Starting practice image preview timer");
             
             const previewMode = document.getElementById('image-preview-mode');
             const questionsMode = document.getElementById('questions');
@@ -357,7 +431,7 @@
             updateTimer();
             
             setTimeout(function() {
-                console.log("Timer complete, showing questions");
+                console.log("Timer complete, showing practice questions");
                 
                 if (previewMode) previewMode.style.display = 'none';
                 if (questionsMode) questionsMode.style.display = 'block';
@@ -367,56 +441,63 @@
             }, 5000);
         }
         
-        document.removeEventListener('DOMContentLoaded', window.resetSelections);
-        document.removeEventListener('template-display', window.resetSelections);
+        window.setupStartPracticeButton = function() {
+            console.log("Setting up start practice button");
+            const startButton = document.getElementById('start-practice-button');
+            if (startButton) {
+                startButton.onclick = function(e) {
+                    e.preventDefault();
+                    console.log("Start practice button clicked");
+                    const practiceIntro = document.getElementById('practice-intro');
+                    const imagePreviewMode = document.getElementById('image-preview-mode');
+                    
+                    if (practiceIntro) practiceIntro.style.display = 'none';
+                    if (imagePreviewMode) imagePreviewMode.style.display = 'block';
+                    
+                    window.inPreviewMode = true;
+                    window.handleImagePreview();
+                };
+            } else {
+                console.log("Start practice button not found");
+            }
+        }
         
         document.addEventListener('DOMContentLoaded', function() {
             window.resetSelections();
-            if (document.getElementById('image-preview-mode') && 
-                document.getElementById('image-preview-mode').style.display !== 'none') {
-                window.handleImagePreview();
-            }
+            window.setupStartPracticeButton();
         });
         
         document.addEventListener('template-display', function() {
             window.resetSelections();
-            setTimeout(function() {
-                if (document.getElementById('image-preview-mode') && 
-                    document.getElementById('image-preview-mode').style.display !== 'none') {
-                    window.handleImagePreview();
-                }
-            }, 100);
+            setTimeout(window.setupStartPracticeButton, 100);
         });
-        
-        window.resetSelections();
-        setTimeout(function() {
-            console.log("Initial check for preview mode");
-            if (document.getElementById('image-preview-mode')) {
-                const previewMode = document.getElementById('image-preview-mode');
-                const questionsMode = document.getElementById('questions');
-                
-                if (previewMode) previewMode.style.display = 'block';
-                if (questionsMode) questionsMode.style.display = 'none';
-                
-                window.inPreviewMode = true;
-                window.handleImagePreview();
-            }
-        }, 50);
+        setTimeout(window.setupStartPracticeButton, 100);
     } else {
         window.resetSelections();
-
-        setTimeout(function() {
-            console.log("Re-check for preview mode");
-            if (document.getElementById('image-preview-mode')) {
-                const previewMode = document.getElementById('image-preview-mode');
-                const questionsMode = document.getElementById('questions');
-                
-                if (previewMode) previewMode.style.display = 'block';
-                if (questionsMode) questionsMode.style.display = 'none';
-                
-                window.inPreviewMode = true;
-                window.handleImagePreview();
-            }
-        }, 50);
+        setTimeout(window.setupStartPracticeButton, 100);
     }
-</script> 
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const startButton = document.getElementById('start-practice-button');
+            if (startButton) {
+                startButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log("Start practice button clicked (backup handler)");
+                    const practiceIntro = document.getElementById('practice-intro');
+                    const imagePreviewMode = document.getElementById('image-preview-mode');
+                    
+                    if (practiceIntro) practiceIntro.style.display = 'none';
+                    if (imagePreviewMode) imagePreviewMode.style.display = 'block';
+                    
+                    window.inPreviewMode = true;
+                    if (typeof window.handleImagePreview === 'function') {
+                        window.handleImagePreview();
+                    }
+                });
+            }
+        }, 500);
+    });
+</script>

@@ -35,6 +35,7 @@ import resultsFooterHTML from "../templates/results-footer.html";
 import commentsHTML from "../templates/comments.html";
 import adSurveyHTML from "./pages/adSurvey.html";
 import finalQuestionsHTML from "./pages/finalQuestions.html";
+import practiceHTML from "./pages/practice.html";
 
 //CONVERT HTML INTO TEMPLATES
 let introTemplate = Handlebars.compile(introHTML);
@@ -45,35 +46,36 @@ let resultsFooterTemplate = Handlebars.compile(resultsFooterHTML);
 let commentsTemplate = Handlebars.compile(commentsHTML);
 let adSurveyTemplate = Handlebars.compile(adSurveyHTML);
 let finalQuestionsTemplate = Handlebars.compile(finalQuestionsHTML);
+let practiceTemplate = Handlebars.compile(practiceHTML);
 
-// At the top level, add these variables
 let currentImageIndex = 0;
-const totalImagesToShow = 11;
+const totalImagesToShow = 10;
 let selectedImages = [];
+let inPreviewMode = true;
+let practiceImageIndex = -1;
 
-// Create an array of the actual image filenames
 const IMAGE_FILES = [
-    "2101C1.jpg", "2101C2.jpg", "2101S1.jpg", "2102C2.jpg", "2102C2B.jpg",
-    "2102S1.jpg", "2103C1.jpg", "2103S1.jpg", "2104C1.jpg", "2104C2.jpg",
-    "2104S1.jpg", "2105C1B.jpg", "2105C2.jpg", "2105S.jpg", "2105S2.jpg",
-    "2106S1.jpg", "2106S2.jpg", "2107C1.jpg", "2107S1.jpg", "2107S2.jpg",
-    "2201C1.jpg", "2201C2.jpg", "2201S1.jpg", "2201S2.jpg", "2202S1.jpg",
-    "2204C1.jpg", "2204C2.jpg", "2204S1.jpg", "2204S2.jpg", "2205C1.jpg",
-    "2205S1.jpg", "2206C1.jpg", "2206S1.jpg", "2207C1.jpg", "2207S1.jpg",
-    "2207S2.jpg", "2208C1.jpg", "2208S1.jpg", "2208S2.jpg", "2209C1.jpg",
-    "2209S1.jpg", "2210C1.jpg", "2210C2.jpg", "2210S1.jpg", "2211C1.jpg",
-    "2211S1.jpg", "2301C1.jpg", "2301C2.jpg", "2301S1.jpg", "2301S2.jpg",
-    "2302C1.jpg", "2302S1.jpg", "2302S2.jpg", "2401C1.jpg", "2401C2.jpg",
-    "2401S1.jpg", "2401S2.jpg", "2402C1.jpg", "2402S1.jpg", "2403C1.jpg",
-    "2403C2B.jpg", "2403S1.jpg", "2404C1.jpg", "2404C2.jpg", "2404S1.jpg",
-    "2404S2B.jpg", "2405C1.jpg", "2405C2.jpg", "2405S1.jpg", "2405S2.jpg",
-    "2407C1.jpg", "2407C2.jpg", "2407S1.jpg", "2407S2.jpg", "2408S1.jpg",
-    "2409C1.jpg", "2409C2B.jpg", "2409S1.jpg", "2409S2.jpg", "2410C1.jpg",
-    "2410S1.jpg", "2501C1.jpg", "2501C2.jpg", "2501S1.jpg", "2501S2.jpg",
-    "2502C1.jpg", "2502C2B.jpg", "2502S1.jpg", "2601C1.jpg", "2601C2.jpg",
-    "2601S1.jpg", "2601S2.jpg", "2602C1.jpg", "2602C2.jpg", "2602S1.jpg",
-    "2602S2.jpg", "2604C1.jpg", "2604C2.jpg", "2604S1B.jpg", "2604S2.jpg",
-    "2701C1.jpg", "2701C2B.jpg", "2701S1.jpg", "2702C1.jpg", "2702S1.jpg"
+    "2101C1.jpg", "2201C1.jpg", "2210C1.jpg", "2404C1.jpg", "2501S1.jpg",
+    "2101C2.jpg", "2201C2.jpg", "2210C2.jpg", "2404C2.jpg", "2501S2.jpg",
+    "2101S1.jpg", "2201S1.jpg", "2210S1.jpg", "2404S1.jpg", "2502C1.jpg",
+    "2102C2.jpg", "2201S2.jpg", "2211C1.jpg", "2404S2B.jpg", "2502C2B.jpg",
+    "2102C2B.jpg", "2202S1.jpg", "2211S1.jpg", "2405C1.jpg", "2502S1.jpg",
+    "2102S1.jpg", "2204C1.jpg", "2301C1.jpg", "2405C2.jpg", "2601C1.jpg",
+    "2103C1.jpg", "2204C2.jpg", "2301C2.jpg", "2405S1.jpg", "2601C2.jpg",
+    "2103S1.jpg", "2204S1.jpg", "2301S1.jpg", "2405S2.jpg", "2601S1.jpg",
+    "2104C1.jpg", "2204S2.jpg", "2301S2.jpg", "2407C1.jpg", "2601S2.jpg",
+    "2104C2.jpg", "2205C1.jpg", "2302C1.jpg", "2407C2.jpg", "2602C1.jpg",
+    "2104S1.jpg", "2205S1.jpg", "2302S1.jpg", "2407S1.jpg", "2602C2.jpg",
+    "2105C1B.jpg", "2206C1.jpg", "2302S2.jpg", "2407S2.jpg", "2602S1.jpg",
+    "2105C2.jpg", "2206S1.jpg", "2401C1.jpg", "2408S1.jpg", "2602S2.jpg",
+    "2105S.jpg", "2207C1.jpg", "2401C2.jpg", "2409C1.jpg", "2604C1.jpg",
+    "2105S2.jpg", "2207S1.jpg", "2401S1.jpg", "2409C2B.jpg", "2604C2.jpg",
+    "2106C1B.jpg", "2207S2.jpg", "2401S2.jpg", "2409S1.jpg", "2604S1B.jpg",
+    "2106S1.jpg", "2208C1.jpg", "2402C1.jpg", "2409S2.jpg", "2604S2.jpg",
+    "2106S2.jpg", "2208S1.jpg", "2402S1.jpg", "2410C1.jpg", "2701C1.jpg",
+    "2107C1.jpg", "2208S2.jpg", "2403C1.jpg", "2410S1.jpg", "2701C2B.jpg",
+    "2107S1.jpg", "2209C1.jpg", "2403C2B.jpg", "2501C1.jpg", "2702C1.jpg",
+    "2107S2.jpg", "2209S1.jpg", "2403S1.jpg", "2501C2.jpg", "2702S1.jpg"
 ];
 
 function initializeImageSelection() {
@@ -82,7 +84,12 @@ function initializeImageSelection() {
 		const j = Math.floor(Math.random() * (i + 1));
 		[allIndices[i], allIndices[j]] = [allIndices[j], allIndices[i]];
 	}
-	selectedImages = allIndices.slice(0, totalImagesToShow);
+	
+	// Select a practice image (first in the shuffled array)
+	practiceImageIndex = allIndices[0];
+	
+	// Select the remaining images for the actual survey
+	selectedImages = allIndices.slice(1, totalImagesToShow + 1);
 }
 
 let participantData = {
@@ -161,8 +168,22 @@ module.exports = (function(exports) {
 						resetSelections();
 					}
 					window.scrollTo(0, 0);
+					window.inPreviewMode = true;
+					// console.log("AD_SURVEY on_display, inPreviewMode:", window.inPreviewMode);
+					setTimeout(function() {
+						const previewMode = document.getElementById('image-preview-mode');
+						const questionsMode = document.getElementById('questions');
+						
+						if (previewMode) previewMode.style.display = 'block';
+						if (questionsMode) questionsMode.style.display = 'none';
+						
+						if (typeof window.handleImagePreview === 'function') {
+							window.handleImagePreview();
+						}
+					}, 50);
 				},
 				template_data: () => {
+					console.log("Generating template data, inPreviewMode:", window.inPreviewMode);
 					return {
 						progress: {
 							current: currentImageIndex,
@@ -170,9 +191,15 @@ module.exports = (function(exports) {
 							value: Math.round((currentImageIndex / totalImagesToShow) * 100)
 						},
 						currentImage: `./img/105-edited/${IMAGE_FILES[selectedImages[currentImageIndex]]}`,
+						showQuestions: false
 					}
 				},
 				finish: function() {
+					if (window.inPreviewMode) {
+						window.inPreviewMode = false;
+						LITW.utils.showSlide("ad-survey");
+						return true;
+					}
 					if (!window.selectionData.likelihood || 
 						!window.selectionData.appeal || 
 						!window.selectionData.creative ||
@@ -190,20 +217,14 @@ module.exports = (function(exports) {
 					});
 
 					currentImageIndex++;
+					window.inPreviewMode = true;
 					
-					//if total images to show is reached, proceed to final questions
 					if (currentImageIndex >= totalImagesToShow) {
-						// console.log("...participantData.responses: " + JSON.stringify({
-						// 	dataType: "finalData",
-						// 	demographics: participantData.demographics,
-						// 	imageRatings: participantData.responses
-						// }));
 						LITW.data.submitStudyData({
 							dataType: "finalData",
 							demographics: participantData.demographics,
 							imageRatings: participantData.responses
 						});
-						// Instead of calling calculateResults(), show the final questions
 						window.scrollTo(0, 0);
 						LITW.utils.showSlide("final_questions");
 					} else {
@@ -273,6 +294,56 @@ module.exports = (function(exports) {
 					calculateResults();
 					return true;
 				}
+			},
+			PRACTICE: {
+				name: "practice",
+				type: LITW.engine.SLIDE_TYPE.SHOW_SLIDE,
+				display_element_id: "practice",
+				template: practiceTemplate,
+				display_next_button: false,
+				on_display: function() {
+					if (typeof resetSelections === 'function') {
+						resetSelections();
+					}
+					window.scrollTo(0, 0);
+					window.inPreviewMode = false; // Start with intro screen
+				},
+				template_data: () => {
+					return {
+						practiceImage: `./img/105-edited/${IMAGE_FILES[practiceImageIndex]}`,
+						startedPractice: false,
+						showQuestions: false
+					}
+				},
+				finish: function() {
+					if (window.inPreviewMode) {
+						window.inPreviewMode = false;
+						LITW.utils.showSlide("practice");
+						return true;
+					}
+					
+					if (!window.selectionData.likelihood || 
+						!window.selectionData.appeal || 
+						!window.selectionData.creative ||
+						!window.selectionData.weird) {
+						return false;
+					}
+
+					// save practice data with a practice flag
+					participantData.responses.push({
+						imageId: IMAGE_FILES[practiceImageIndex],
+						likelihood: parseInt(window.selectionData.likelihood),
+						appeal: parseInt(window.selectionData.appeal),
+						creative: parseInt(window.selectionData.creative),
+						weird: parseInt(window.selectionData.weird),
+						timestamp: new Date().getTime(),
+						isPractice: true
+					});
+
+					window.scrollTo(0, 0);
+					LITW.utils.showSlide("ad-survey");
+					return true;
+				}
 			}
 		}
 	};
@@ -282,7 +353,7 @@ module.exports = (function(exports) {
 		timeline.push(config.slides.INTRODUCTION);
 		timeline.push(config.slides.INFORMED_CONSENT_LITW);
 		timeline.push(config.slides.DEMOGRAPHICS);
-
+		timeline.push(config.slides.PRACTICE);
 		for (let i = 0; i < totalImagesToShow; i++) {
 			timeline.push(config.slides.AD_SURVEY);
 		}
@@ -296,8 +367,9 @@ module.exports = (function(exports) {
 	function calculateResults() {
 		let aiImages = [];
 		let humanImages = [];
+		const nonPracticeResponses = participantData.responses.filter(response => !response.isPractice);
 
-		participantData.responses.forEach(response => {
+		nonPracticeResponses.forEach(response => {
 			if (isAIGenerated(response.imageId)) {
 				aiImages.push(response);
 			} else {
@@ -346,23 +418,170 @@ module.exports = (function(exports) {
 		if('PID' in LITW.data.getURLparams) {
 			results.code = LITW.data.getParticipantId();
 		}
-
-		results_div.html(
-			resultsTemplate({
-				data: results
-			}));
-		if(showFooter) {
-			$("#results-footer").html(resultsFooterTemplate(
-				{
-					share_url: window.location.href,
-					share_title: $.i18n('litw-irb-header'),
-					share_text: $.i18n('litw-template-title'),
-					more_litw_studies: recom_studies
-				}
-			));
+		
+		results.responses = participantData.responses;
+		if (!Handlebars.helpers.json) {
+			Handlebars.registerHelper('json', function(context) {
+				return new Handlebars.SafeString(JSON.stringify(context));
+			});
 		}
+		loadExpertRatings().then(expertData => {
+			try {
+				const expertRatings = {};
+				
+				expertData.forEach(item => {
+					if (!item.image_file_name) return;
+					const imageKey = item.image_file_name + '.jpg';
+					if (item.design_performance && item.visual_appeal && item.creative && item.weird) {
+						expertRatings[imageKey] = {
+							likelihood: parseFloat(item.design_performance) || 0,
+							appeal: parseFloat(item.visual_appeal) || 0,
+							creative: parseFloat(item.creative) || 0,
+							weird: parseFloat(item.weird) || 0
+						};
+					}
+				});
+				
+				console.log("Expert ratings loaded:", expertRatings);
+				results.expertRatings = expertRatings;
+				const templateHtml = resultsTemplate({
+					data: results
+				});
+				
+				results_div.html(templateHtml);
+				
+				if(showFooter) {
+					$("#results-footer").html(resultsFooterTemplate({
+						share_url: window.location.href,
+						share_title: $.i18n('litw-irb-header'),
+						share_text: $.i18n('litw-template-title'),
+						more_litw_studies: recom_studies
+					}));
+				}
+				
+				results_div.i18n();
+				LITW.utils.showSlide("results");
+				populateResultsTable(participantData.responses, expertRatings);
+				
+			} catch (error) {
+				console.error("Error processing expert ratings:", error);
+				results.expertRatings = {};
+				renderSimpleResultsPage(results, results_div, recom_studies, showFooter);
+			}
+		}).catch(error => {
+			console.error("Error loading expert ratings:", error);
+			results.expertRatings = {};
+			renderSimpleResultsPage(results, results_div, recom_studies, showFooter);
+		});
+	}
+
+	function renderSimpleResultsPage(results, results_div, recom_studies, showFooter) {
+		console.log("Rendering simple results page");
+		
+		results_div.html(resultsTemplate({
+			data: results
+		}));
+		
+		if(showFooter) {
+			$("#results-footer").html(resultsFooterTemplate({
+				share_url: window.location.href,
+				share_title: $.i18n('litw-irb-header'),
+				share_text: $.i18n('litw-template-title'),
+				more_litw_studies: recom_studies
+			}));
+		}
+		
 		results_div.i18n();
 		LITW.utils.showSlide("results");
+		$("#results-table-body").html('<tr><td colspan="6" class="text-center">Unable to load detailed results. Please try again later.</td></tr>');
+	}
+
+	function populateResultsTable(responses, expertRatings) {
+		console.log("Manually populating results table");
+		
+		try {
+			const tableBody = document.getElementById('results-table-body');
+			if (!tableBody) {
+				console.error("Could not find results table body element");
+				return;
+			}
+			
+			let tableHtml = '';
+			
+			if (responses && responses.length > 0) {
+				responses.forEach(function(response) {
+					if (!response || !response.imageId) {
+						console.log("Invalid response item:", response);
+						return;
+					}
+					const expert = expertRatings[response.imageId] || {
+						likelihood: '-',
+						appeal: '-',
+						creative: '-',
+						weird: '-'
+					};
+					
+					// Determine if AI-generated
+					const isAI = response.imageId.includes('C') ? 'Yes' : 'No';
+					
+					// Create row HTML - all rows white background with bottom border
+					tableHtml += '<tr style="background-color: white; border-bottom: 1px solid #dee2e6;">';
+					
+					// AI column - just bold, no color
+					tableHtml += '<td style="font-weight: bold;">' + isAI + '</td>';
+					
+					// Image column - simplified with error handling
+					tableHtml += '<td>';
+					
+					// Add image with error handling
+					tableHtml += '<img src="./img/105-edited/' + response.imageId + '" alt="Ad design" class="img-fluid" style="max-height: 100px;" ';
+					tableHtml += 'onerror="this.onerror=null; this.src=\'./img/image-not-found.png\'; this.alt=\'Image not available\';">';
+					
+					// Only add "Practice" text for practice image, no badge
+					if (response.isPractice) {
+						tableHtml += '<br><small class="text-muted">Practice</small>';
+					}
+					
+					tableHtml += '</td>';
+					
+					// Function to determine similarity class - only highlight background, keep text color consistent
+					function getSimilarityClass(userRating, expertRating) {
+						if (expertRating === '-' || isNaN(expertRating)) return '';
+						const diff = Math.abs(userRating - expertRating);
+						if (diff <= 1) return ' style="background-color: #d4edda;"'; // Light green background
+						return '';
+					}
+					tableHtml += '<td' + getSimilarityClass(response.likelihood, expert.likelihood) + '>';
+					tableHtml += '<strong>' + response.likelihood + '</strong> ⟷ ' + expert.likelihood + '</td>';
+					tableHtml += '<td' + getSimilarityClass(response.appeal, expert.appeal) + '>';
+					tableHtml += '<strong>' + response.appeal + '</strong> ⟷ ' + expert.appeal + '</td>';
+					tableHtml += '<td' + getSimilarityClass(response.creative, expert.creative) + '>';
+					tableHtml += '<strong>' + response.creative + '</strong> ⟷ ' + expert.creative + '</td>';
+					tableHtml += '<td' + getSimilarityClass(response.weird, expert.weird) + '>';
+					tableHtml += '<strong>' + response.weird + '</strong> ⟷ ' + expert.weird + '</td>';
+					
+					tableHtml += '</tr>';
+				});
+			} else {
+				console.log("No responses found");
+				tableHtml = '<tr><td colspan="6" class="text-center">No rating data available</td></tr>';
+			}
+			
+			// Set the HTML directly
+			tableBody.innerHTML = tableHtml;
+			
+			// Also update the table class to remove striping
+			const table = document.querySelector('.table-striped');
+			if (table) {
+				table.classList.remove('table-striped');
+				table.classList.add('table-bordered');
+				table.style.borderCollapse = 'collapse';
+			}
+			
+		} catch (error) {
+			console.error("Error manually populating results table:", error);
+			$("#results-table-body").html('<tr><td colspan="6" class="text-center text-danger">Error loading results: ' + error.message + '</td></tr>');
+		}
 	}
 
 	function bootstrap() {
@@ -389,18 +608,13 @@ class StudyManager {
 	constructor() {
 		this.selectedImages = [];
 		this.currentImageIndex = 0;
-		this.totalImagesToShow = 11;
+		this.totalImagesToShow = 10;
 		this.responses = [];
-		
-		// Initialize when constructed
 		this.initializeImageSelection();
 	}
 
 	initializeImageSelection() {
-		// Create array of all possible indices
 		const allIndices = Array.from({length: IMAGE_FILES.length}, (_, i) => i);
-		
-		// Randomly select 11 indices
 		for (let i = allIndices.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
 			[allIndices[i], allIndices[j]] = [allIndices[j], allIndices[i]];
@@ -456,4 +670,50 @@ function getQuest1Data(quest_id, completion) {
 
 function isAIGenerated(imageId) {
 	return imageId.includes('C');
+}
+
+//starts preview mode
+window.inPreviewMode = true;
+
+// Function to load expert ratings from CSV
+function loadExpertRatings() {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: './img/expert-data.csv',
+            dataType: 'text',
+            success: function(data) {
+                console.log("CSV data loaded successfully");
+                const expertData = parseCSV(data);
+                console.log("Parsed expert data:", expertData);
+                resolve(expertData);
+            },
+            error: function(xhr, status, error) {
+                console.error("Failed to load expert data:", error);
+                reject(error);
+            }
+        });
+    });
+}
+
+// Function to parse CSV data
+function parseCSV(csvText) {
+    const lines = csvText.split('\n');
+    const headers = lines[0].split(',');
+    
+    const result = [];
+    
+    for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue; // Skip empty lines
+        
+        const values = lines[i].split(',');
+        const obj = {};
+        
+        for (let j = 0; j < headers.length; j++) {
+            obj[headers[j].trim()] = values[j] ? values[j].trim() : '';
+        }
+        
+        result.push(obj);
+    }
+    
+    return result;
 }
