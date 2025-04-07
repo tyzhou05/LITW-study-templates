@@ -110,7 +110,7 @@ module.exports = (function(exports) {
 			'en': './i18n/en.json?v=1.0',
 			'pt': './i18n/pt-br.json?v=1.0',
 		},
-		study_id: "TO_BE_ADDED_IF_USING_LITW_INFRA",
+		study_id: "9d65b82a-d688-4bee-990f-74844f34caaf",
 		study_recommendation: [],
 		preLoad: ["../img/btn-next.png","../img/btn-next-active.png","../img/ajax-loader.gif"],
 		slides: {
