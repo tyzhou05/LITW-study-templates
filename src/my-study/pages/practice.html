@@ -3,8 +3,11 @@
         background-color: transparent;
         border: 1px solid #0d6efd;
         color: #0d6efd;
-        min-width: 120px;
-        border-right: 1px solid #0d6efd !important; 
+        padding: 10px;
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+        width: 100%;
+        text-align: center;
     }
 
     .btn-outline-primary:hover {
@@ -17,26 +20,23 @@
         color: white;
     }
 
-    .question-box {
-        margin: 30px 0;
-    }
-
     .btn-group {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
         width: 100%;
-        border-radius: 5px;
+        margin-bottom: 30px;
+    }
+
+    .btn-group .btn {
+        border-radius: 5px !important;
+        margin-bottom: 8px;
     }
 
     .question-text {
         margin: 20px 0;
         font-size: 1.1rem;
         color: #2c3e50;
-    }
-
-    .btn-group .btn {
-        flex: 1;
-        border-radius: 0;
+        text-align: center;
     }
 
     .main-question {
@@ -86,7 +86,6 @@
         position: relative;
     }
     
-    /* Ensure timer is visible */
     .timer-display {
         margin-top: 20px;
         font-size: 1.2rem;
@@ -172,6 +171,37 @@
     .practice-intro p {
         margin-bottom: 20px;
         line-height: 1.6;
+    }
+
+    @media (min-width: 768px) {
+        .btn-group {
+            flex-direction: row;
+            justify-content: center;
+            border-radius: 5px;
+        }
+        
+        .btn-outline-primary {
+            width: auto;
+            margin-bottom: 0;
+            border-radius: 0 !important;
+            border-right: 1px solid #0d6efd !important;
+            min-width: 120px;
+        }
+        
+        .btn-group .btn {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        .btn-group .btn:first-child {
+            border-top-left-radius: 5px !important;
+            border-bottom-left-radius: 5px !important;
+        }
+        
+        .btn-group .btn:last-child {
+            border-top-right-radius: 5px !important;
+            border-bottom-right-radius: 5px !important;
+        }
     }
 </style>
 
@@ -349,6 +379,8 @@
     if (!window.practiceSurveyInitialized) {
         window.practiceSurveyInitialized = true;
         window.selectionData = {};
+
+        console.log("CHECKING ALL RESPONSES")
 
         window.checkAllResponses = function() {
             const hasAllResponses = 

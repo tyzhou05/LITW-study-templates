@@ -1,3 +1,99 @@
+<style>
+    .btn-outline-primary {
+        background-color: transparent;
+        border: 1px solid #0d6efd;
+        color: #0d6efd;
+        padding: 10px;
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #6788b9;
+        color: white;
+    }
+
+    .btn-outline-primary.active {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-bottom: 30px;
+    }
+
+    .btn-group .btn {
+        border-radius: 5px !important;
+        margin-bottom: 8px;
+    }
+
+    .question-text {
+        margin: 20px 0;
+        font-size: 1.1rem;
+        color: #2c3e50;
+        text-align: center;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .final-question {
+        margin: 25px 0;
+        text-align: center;
+    }
+    
+    @media (max-width: 767px) {
+        .final-question {
+            font-size: 1.1rem;
+        }
+        
+        h3, h5 {
+            font-size: 1.2rem;
+        }
+        
+        .table {
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .btn-group {
+            flex-direction: row;
+            justify-content: center;
+            border-radius: 5px;
+        }
+        
+        .btn-outline-primary {
+            width: auto;
+            margin-bottom: 0;
+            border-radius: 0 !important;
+            border-right: 1px solid #0d6efd !important;
+            min-width: 120px;
+        }
+        
+        .btn-group .btn {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        .btn-group .btn:first-child {
+            border-top-left-radius: 5px !important;
+            border-bottom-left-radius: 5px !important;
+        }
+        
+        .btn-group .btn:last-child {
+            border-top-right-radius: 5px !important;
+            border-bottom-right-radius: 5px !important;
+        }
+    }
+</style>
+
 <h3 class="bolded-blue" style="text-align: center" data-i18n="litw-results-header">Thank you for participating!</h3>
 <p class="text-center">
   Here's how your ratings compare to the experts' ratings.<br>
